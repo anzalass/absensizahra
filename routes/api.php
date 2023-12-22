@@ -56,7 +56,7 @@ Route::get('getKurikulum',[UserController::class, 'getKurikulum']);
 Route::put('ChangePassword/{idUser}',[UserController::class,'changePassword']);
 
 //Table Izin
-Route::get('getIzin',[IzinController::class, 'index']);
+Route::get('getIzin/{id}',[IzinController::class, 'index']);
 Route::get('getIzinByKurikulumId/{id}',[IzinController::class,'getIzinByKurikulumId']);
 Route::get('getIzinGuruById/{id}',[IzinController::class,'getIzinGuruById']);
 Route::get('getIzinKurikulum',[IzinController::class,'AllPermissionKurikulum']);

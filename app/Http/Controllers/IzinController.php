@@ -9,24 +9,17 @@ use Illuminate\Support\Facades\Validator;
 
 class IzinController extends Controller
 {
-        public function index(){
-       try{
-         $getAllIzin = Izin::all();
-
-        if($getAllIzin){
+    public function index($id){
+        $result = Izin::where("idUser",$id)->get();
+        if($result){
             return response()->json([
-                'results' => $getAllIzin
+                'results'=> $result
             ],200);
         }else{
             return response()->json([
-                'Message' => "Tidak Terdapat Izin"
+                'message' => "Izin tidak ditemukan"
             ],404);
-        }
-       }catch(\Exception $e){
-            return response()->json([
-                'message' => $e
-            ],500);
-       }    
+        }   
     }
 
     public function getIzinByKurikulumId($id){
@@ -386,6 +379,12 @@ class IzinController extends Controller
                         'keterangan'=> 'required',
                         'typeIzin'=> 'required',
                     ]);
+                }
+
+                if($validator->fails()){
+                    return response()->json([
+                        'error'=> $validator->errors()
+                    ],422);
                 }
         
                 if($request->foto != null){

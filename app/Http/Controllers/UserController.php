@@ -25,27 +25,50 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends BaseController
 {
     public function regis(UserRequest $request){
-          $validator = Validator::make($request->all(),[
+        if($request->role == 1){
+            $validator = Validator::make($request->all(),[
+                'email' => 'required|email',
+                'password' => 'required|string|max:50',
+                'name' => 'required|string|max:255',
+                'role' => 'required|string|max:1',
+                'kelas'=>'required|string',
+                "noHP" => 'required|string|max:13'
+          
+            ]);
+        }else{
+            $validator = Validator::make($request->all(),[
                 'email' => 'required|email',
                 'password' => 'required|string|max:50',
                 'name' => 'required|string|max:255',
                 'role' => 'required|string|max:1',
                 "noHP" => 'required|string|max:13'
-          
             ]);
+        }
              if($validator->fails()){
                 return response()->json([
                     'error' => $validator->errors()
                 ],422);
             }
+
         try{
-            $user = User::create([
+                if($request->role == 1){
+                    $user = User::create([
+                        'email'=>$request->email,
+                        'name'=>$request->name,
+                        'kelas'=>$request->kelas,
+                        'password' => Hash::make($request->password ),
+                        'role' => $request->role,
+                        'noHP' => $request->noHP
+                    ]);
+                }else{
+                    $user = User::create([
                         'email'=>$request->email,
                         'name'=>$request->name,
                         'password' => Hash::make($request->password ),
                         'role' => $request->role,
                         'noHP' => $request->noHP
                     ]);
+                }
 
             if($user){
                 try{
