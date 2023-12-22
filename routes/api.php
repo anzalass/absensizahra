@@ -40,6 +40,11 @@ Route::middleware('auth')->group(function () {
     Route::get('GetUser',[UserController::class,'getUser']);
 });
 
+Route::get('DashboardSiswa/{id}',[IzinController::class, 'DashboardSiswa']);
+Route::get('DashboardGuru/{idUser}/{idGuru}',[IzinController::class, 'DashboardGuru']);
+Route::get('DashboardAdmin',[UserController::class, 'DashboardAdmin']);
+Route::get('DashboardKurikulum/{id}',[IzinController::class, 'DashboardKurikulum']);
+
 //Table User
 Route::get('getUser',[UserController::class, 'getUser']);
 Route::get('getUserById/{id}',[UserController::class,'getUserById']);
