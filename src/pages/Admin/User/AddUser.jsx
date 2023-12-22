@@ -26,6 +26,7 @@ export default function AddUser() {
     password: "",
     role: "",
     noHP: "",
+    kelas:""
   });
   const tambahPetugas = async () => {
     try {
@@ -37,11 +38,12 @@ export default function AddUser() {
     } catch (err) {
       console.log(err);
       setErr({
-        name: err.response.data.errors.name,
-        email: err.response.data.errors.email,
-        password: err.response.data.errors.password,
-        role: err.response.data.errors.role,
-        noHP: err.response.data.errors.noHP,
+        name: err?.response?.data?.error?.name,
+        email: err?.response?.data?.error?.email,
+        password: err?.response?.data?.error?.password,
+        role: err?.response?.data?.error?.role,
+        noHP: err?.response?.data?.error?.noHP,
+        kelas:err?.response?.data?.error?.kelas
       });
     }
   };
@@ -142,7 +144,7 @@ export default function AddUser() {
                     onChange={(e) => changeDataHandler(e)}
                     className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                   />
-                  {/* {err.noHP ? <p>{err.noHP}</p> : null} */}
+                  {err.kelas ? <p>{err.kelas}</p> : null}
                 </div>
               ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">

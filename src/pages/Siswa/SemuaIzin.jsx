@@ -9,10 +9,12 @@ import { BsTrash3 } from "react-icons/bs";
 import { BiEditAlt } from "react-icons/bi";
 import { data } from "autoprefixer";
 import { BASE_URL, BACKEND_BASE_URL } from "../../config/base_url.jsx";
+import { useSelector } from "react-redux";
 
 export default function SemuaIzin() {
   const [Izin, setIzin] = useState([]);
   const [izinSearch, setIzinSearch] = useState([]);
+  const {user} = useSelector((state)=> state.user);
 
   useEffect(() => {
     fetchData();
@@ -29,7 +31,7 @@ export default function SemuaIzin() {
 
   const fetchData = async () => {
     try {
-      const result = await axios.get(`${BACKEND_BASE_URL}/api/getIzin`);
+      const result = await axios.get(`${BACKEND_BASE_URL}/api/getIzin/${user.id}`);
       setIzin(result.data.results);
       setIzinSearch(result.data.results);
       console.log(result.data.results);

@@ -387,6 +387,7 @@ export default function TabelIzinGuru({ data, children }) {
       }
     } catch (err) {
       console.error(err);
+      setErrorIzin(err.response.data.error);
     }
   };
 
@@ -397,7 +398,8 @@ export default function TabelIzinGuru({ data, children }) {
       const res = await axios.get(`${BACKEND_BASE_URL}/api/getIzinById/${id}`);
       setIzinEdit(res.data.results[0]);
     } catch (err) {
-      setErrorIzin(err.response.data.error);
+      console.log(err);
+      // setErrorIzin(err.response.data.error);
     }
   };
 
@@ -627,7 +629,7 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {izin.jamKeluar ? <p>{izin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
                   </div>
                   <div className="w-full mt-4">
                     <h1 className="font-abc pb-2">Jam Masuk</h1>
@@ -638,7 +640,7 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {izin.jamMasuk ? <p>{izin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
                   </div>
                 </>
               ) : izin.typeIzin == "Pulang" ? (
@@ -651,7 +653,7 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {izin.jamKeluar ? <p>{izin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
                   </div>
                 </>
               ) : (
@@ -665,7 +667,7 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {izin.jamMasuk ? <p>{izin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
                   </div>
                   <div className="flex items-center mt-4 mb-4">
                     <input
@@ -877,7 +879,7 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinEditHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
+                    {errIzin?.jamMasuk ? <p>{errIzin?.jamMasuk}</p> : null}
                   </div>
                   {isBukti && izinEdit.typeIzin == "Masuk" ? (
                     <div className="w-full mt-4">
@@ -925,7 +927,7 @@ export default function TabelIzinGuru({ data, children }) {
                   required
                 ></textarea>
               </div>
-              {errIzin.keterangan ? <p>{errIzin.keterangan}</p> : null}
+              {errIzin?.keterangan ? <p>{errIzin?.keterangan}</p> : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
                   onClick={(e) => EditIzin()}

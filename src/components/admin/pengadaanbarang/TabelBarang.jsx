@@ -300,7 +300,8 @@ export default function TabelBarang({ data, children }) {
         // window.location.href = `${BASE_URL}owner/pengadaan-barang`;
       }
     } catch (err) {
-      console.error(err);
+      console.error(err.response.data.error);
+      setErrorIzin(err.response.data.error)
     }
   };
 
@@ -523,7 +524,7 @@ export default function TabelBarang({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {izin.jamKeluar ? <p>{izin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
                   </div>
                   <div className="w-full mt-4">
                     <h1 className="font-abc pb-2">Jam Masuk</h1>
@@ -534,7 +535,7 @@ export default function TabelBarang({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {izin.jamMasuk ? <p>{izin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
                   </div>
                 </>
               ) : izin.typeIzin == "Pulang" ? (
@@ -547,7 +548,7 @@ export default function TabelBarang({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {izin.jamKeluar ? <p>{izin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
                   </div>
                 </>
               ) : (
@@ -561,7 +562,7 @@ export default function TabelBarang({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {izin.jamMasuk ? <p>{izin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
                   </div>
                   <div className="flex items-center mt-4 mb-4">
                     <input
@@ -692,7 +693,6 @@ export default function TabelBarang({ data, children }) {
               ) : null}
               <div className="w-full mt-4">
                 <h1 className="font-abc pb-2 ">Mata Pelajaran</h1>
-                {Checkbox == 0 ? (
                   <input
                     type="text"
                     value={izinEdit.idMapel}
@@ -700,35 +700,6 @@ export default function TabelBarang({ data, children }) {
                     onChange={(e) => changeIzinEditHandler(e)}
                     className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                   />
-                ) : (
-                  <select
-                    name="idMapel"
-                    onChange={(e) => changeIzinEditHandler(e)}
-                    id=""
-                    className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                  >
-                    {mapel.map((item, index) => {
-                      if (item.kodePelajaran == izinEdit.idMapel) {
-                        return (
-                          <option
-                            key={index}
-                            value={`${item.kodePelajaran}`}
-                            selected
-                          >
-                            {item.namaPelajaran}
-                          </option>
-                        );
-                      } else {
-                        return (
-                          <option key={index} value={`${item.kodePelajaran}`}>
-                            {item.namaPelajaran}
-                          </option>
-                        );
-                      }
-                    })}
-                  </select>
-                )}
-
                 {errIzin.idMapel ? <p>{errIzin.idMapel}</p> : null}
               </div>
               <div className="w-full mt-4">
