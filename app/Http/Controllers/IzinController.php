@@ -22,6 +22,56 @@ class IzinController extends Controller
         }   
     }
 
+    public function DashboardSiswa($id){
+        $izinMasuk = Izin::where("typeIzin","Masuk")->where("id", $id)->get();
+        $izinKeluar = Izin::where("typeIzin","Keluar")->where("id", $id)->get();
+        $izinPulang = Izin::where("typeIzin","Pulang")->where("id", $id)->get();
+        $izinDiizinkan = Izin::where("typeIzin","Diizinkan")->where("id", $id)->get();
+        $izinDitolak = Izin::where("typeIzin","Ditolak")->where("id", $id)->get();
+
+        return response()->json([
+            "masuk"=>count($izinMasuk),
+            "keluar"=>count($izinKeluar),
+            "pulang"=>count($izinPulang),
+            "diizinkan"=>count($izinDiizinkan),
+            "ditolak"=>count($izinDitolak)
+        ],200);
+    }
+
+    public function DashboardGuru($idSiswa, $idGuru){
+        $izinMasuk = Izin::where("typeIzin","Masuk")->where("id", $idSiswa)->get();
+        $izinKeluar = Izin::where("typeIzin","Keluar")->where("id", $idSiswa)->get();
+        $izinPulang = Izin::where("typeIzin","Pulang")->where("id", $idSiswa)->get();
+        $izinDiizinkan = Izin::where("typeIzin","Diizinkan")->where("id", $idSiswa)->get();
+        $izinDitolak = Izin::where("typeIzin","Ditolak")->where("id", $idSiswa)->get();
+        $izinGuru = Izin::where("id", $idGuru)->get();
+
+        return response()->json([
+            "masuk"=>count($izinMasuk),
+            "keluar"=>count($izinKeluar),
+            "pulang"=>count($izinPulang),
+            "diizinkan"=>count($izinDiizinkan),
+            "ditolak"=>count($izinDitolak),
+            "izinGuru"=>count($izinGuru)
+        ],200);
+    }
+
+    public function DashboardKurikulum($id){
+        $izinMasuk = Izin::where("typeIzin","Masuk")->where("kurikulum", $id)->get();
+        $izinKeluar = Izin::where("typeIzin","Keluar")->where("kurikulum", $id)->get();
+        $izinPulang = Izin::where("typeIzin","Pulang")->where("kurikulum", $id)->get();
+        $izinDiizinkan = Izin::where("typeIzin","Diizinkan")->where("kurikulum", $id)->get();
+        $izinDitolak = Izin::where("typeIzin","Ditolak")->where("kurikulum", $id)->get();
+
+        return response()->json([
+            "masuk"=>count($izinMasuk),
+            "keluar"=>count($izinKeluar),
+            "pulang"=>count($izinPulang),
+            "diizinkan"=>count($izinDiizinkan),
+            "ditolak"=>count($izinDitolak)
+        ],200);
+    }
+
     public function getIzinByKurikulumId($id){
         $result = Izin::where('kurikulum', $id)->get();
         if($result){

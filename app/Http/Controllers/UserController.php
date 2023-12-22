@@ -24,6 +24,18 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends BaseController
 {
+    public function DashboardAdmin(){
+        $siswa = User::where("role", "1")->get();
+        $guru = User::where("role","2")->get();
+        $kurikulum = User::where("role","5")->get();
+
+        return response()->json([
+            "siswa"=>count($siswa),
+            "guru"=>count($guru),
+            "kurikulum"=>count($kurikulum),
+        ],200);
+    }
+
     public function regis(UserRequest $request){
         if($request->role == 1){
             $validator = Validator::make($request->all(),[
