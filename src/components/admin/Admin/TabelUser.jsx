@@ -17,6 +17,7 @@ export default function TabelUser({ data, children }) {
   const [allUser, setAllUser] = useState([]);
   const [filterBulan, setFilterBulan] = useState("");
   const [filterTahun, setFilterTahun] = useState("");
+  const [keyword, setKeyword] = useState("");
   const [status, setStatus] = useState("");
   const bulan = [
     "Januari",
@@ -110,7 +111,9 @@ export default function TabelUser({ data, children }) {
           (filterBulan === "" ||
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
-            new Date(item.created_at).getFullYear() === Number(filterTahun))
+            new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
+            (keyword === "" || item.name === keyword)
+
       )
       .forEach((a, index) => {
         row.push({
@@ -270,6 +273,7 @@ export default function TabelUser({ data, children }) {
                     <div className="flex">
                       <input
                         type="text"
+                        onChange={e=> {console.log(e.target.value); setKeyword(e.target.value)}}
                         placeholder="cari"
                         className="h-[40px] pl-3 rounded-md w-full border-2 "
                       />

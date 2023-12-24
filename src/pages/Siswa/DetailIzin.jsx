@@ -78,6 +78,8 @@ export default function DetailIzin() {
       `${BACKEND_BASE_URL}/api/getMataPelajaran`
     );
 
+    console.log(getIzinById.data.results);
+
     setAllUser(getAllUser.data.results);
     setIzin(getIzinById.data.results);
     setMapel(getMapel.data.results);
@@ -232,7 +234,8 @@ export default function DetailIzin() {
                     </div>
                   </div>
                 </>
-              ) : izin[0].kurikulum != null ? (
+              ) : null}
+              { izin[0].kurikulum != null ? (
                 <>
                   <div className="flex w-full ">
                     <div className="w-[20%]">
@@ -263,7 +266,7 @@ export default function DetailIzin() {
                     </div>
                   </div>
                 </>
-              ) : null}
+              ) :null}
               <div className="flex w-full ">
                 <div className="w-[20%]">
                   {" "}
