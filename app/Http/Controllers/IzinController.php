@@ -252,6 +252,7 @@ class IzinController extends Controller
                     'idMapel' => 'required',
                     'kelas' => 'required|string',
                     'guruPengajar' => 'required|string',
+                    'kurikulum' => 'required|string',
                     'keterangan'=> 'required',
                     'jamMasuk' => 'required',
                     'typeIzin'=> 'required',
@@ -262,6 +263,7 @@ class IzinController extends Controller
                     'idMapel' => 'required',
                     'kelas' => 'required|string',
                     'guruPengajar' => 'required|string',
+                    'kurikulum' => 'required|string',
                     'jamKeluar'=> 'required',
                     'jamMasuk'=> 'required',
                     'keterangan'=> 'required',
@@ -273,6 +275,7 @@ class IzinController extends Controller
                     'idMapel' => 'required',
                     'kelas' => 'required|string',
                     'guruPengajar' => 'required|string',
+                    'kurikulum' => 'required|string',
                     'jamKeluar'=> 'required',
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
@@ -292,11 +295,12 @@ class IzinController extends Controller
                     'kelas'=> $request->kelas,
                     'foto' => $request->foto,
                     'guruPengajar'=> $request->guruPengajar,
+                    'kurikulum'=> $request->kurikulum,
                     'jamKeluar'=> $request->jamKeluar,
                     'jamMasuk'=> $request->jamMasuk,
                     'keterangan'=> $request->keterangan,
                     'typeIzin'=> $request->typeIzin,
-                    'responGuruPengajar' => "pending",
+                    'responKurikulum' => "pending",
                 ]);
             }else{
                 $add = Izin::create([
@@ -304,11 +308,13 @@ class IzinController extends Controller
                     'idMapel'=> $request->idMapel,
                     'kelas'=> $request->kelas,
                     'guruPengajar'=> $request->guruPengajar,
+                    'kurikulum'=> $request->kurikulum,
                     'jamKeluar'=> $request->jamKeluar,
                     'jamMasuk'=> $request->jamMasuk,
                     'keterangan'=> $request->keterangan,
                     'typeIzin'=> $request->typeIzin,
                     'responGuruPengajar' => "pending",
+                    'responKurikulum' => "pending",
                 ]);
             }
 
