@@ -154,13 +154,16 @@ class UserController extends BaseController
         }
     }
 
-        public function getKurikulum(){
+    public function getKurikulum(){
         $Kurikulum = User::where('role', 5)->get();
         if($Kurikulum){
             return response()->json([
                 'results' => $Kurikulum
-            ]);
+            ],200);
         }
+        return response()->json([
+            'message'=> "Data Not Found"
+        ],404);
     }
 
     public function getGuruPiket(){
