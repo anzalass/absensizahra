@@ -26,6 +26,7 @@ export default function TabelBarang({ data, children }) {
   const [idIzin, setIdIzin] = useState();
   const [isSelect, setSelect] = useState(true);
   const [guruPengajar, setGuruPengajar] = useState([]);
+  const [kurikulum, setKurikulum] = useState([]);
   const [AllUser, setAllUser] = useState([]);
   const [filterBulan, setFilterBulan] = useState("");
   const [filterTahun, setFilterTahun] = useState("");
@@ -66,6 +67,7 @@ export default function TabelBarang({ data, children }) {
     idMapel: "",
     kelas: user.kelas,
     guruPengajar: "",
+    kurikulum: "",
     foto: null,
     jamKeluar: "",
     jamMasuk: "",
@@ -78,6 +80,7 @@ export default function TabelBarang({ data, children }) {
     idMapel: "",
     kelas: "",
     guruPengajar: "",
+    kurikulum:"",
     jamKeluar: "",
     jamMasuk: "",
     keterangan: "",
@@ -231,11 +234,13 @@ export default function TabelBarang({ data, children }) {
     const getGuruPengajar = await axios.get(
       `${BACKEND_BASE_URL}/api/getGuruPengajar`
     );
+    const getKurikulum = await axios.get(`${BACKEND_BASE_URL}/api/getKurikulum`);
     const getAllUser = await axios.get(`${BACKEND_BASE_URL}/api/getUser`);
 
     setMapel(getMapel.data.results);
     setAllUser(getAllUser.data.results);
     setGuruPengajar(getGuruPengajar.data.results);
+    setKurikulum(getKurikulum.data.results);
   };
 
   const resetError = () => {
@@ -496,6 +501,26 @@ export default function TabelBarang({ data, children }) {
                 </select>
                 {errIzin.guruPengajar ? <p>{errIzin.guruPengajar}</p> : null}
               </div>
+              <div className="w-full mt-4">
+                <h1 className="font-abc pb-2 ">Kurikulum</h1>
+                <select
+                  name="kurikulum"
+                  onChange={(e) => changeIzinHandler(e)}
+                  id=""
+                  className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
+                >
+                  <option value="">- Select Kurikulum -</option>
+
+                  {kurikulum.map((item, index) => {
+                    return (
+                      <option key={index} value={`${item.id}`}>
+                        {item.name}
+                      </option>
+                    );
+                  })}
+                </select>
+                {errIzin.kurikulum ? <p>{errIzin.kurikulum}</p> : null}
+              </div>
               {isBukti && izin.typeIzin == "Masuk" ? (
                 <div className="w-full mt-4">
                   <label
@@ -727,6 +752,34 @@ export default function TabelBarang({ data, children }) {
                   })}
                 </select>
                 {errIzin.guruPengajar ? <p>{errIzin.guruPengajar}</p> : null}
+              </div>
+              <div className="w-full mt-4">
+                <h1 className="font-abc pb-2 ">Kurikulum</h1>
+                <select
+                  name="kurikulum"
+                  onChange={(e) => changeIzinHandler(e)}
+                  id=""
+                  className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
+                >
+                  <option value="">- Select Kurikulum -</option>
+
+                  {kurikulum.map((item, index) => {
+                    if (item.id == izinEdit.kurikulum) {
+                      return (
+                        <option key={index} value={`${item.id}`} selected>
+                          {item.name}
+                        </option>
+                      );
+                    } else {
+                      return (
+                        <option key={index} value={`${item.id}`}>
+                          {item.name}
+                        </option>
+                      );
+                    }
+                  })}
+                </select>
+                {errIzin.kurikulum ? <p>{errIzin.kurikulum}</p> : null}
               </div>
               {izinEdit.typeIzin == "Keluar" ? (
                 <>
