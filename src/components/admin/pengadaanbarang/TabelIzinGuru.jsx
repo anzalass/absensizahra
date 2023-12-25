@@ -7,6 +7,7 @@ import Spinner from "../../layout/Spinner";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { BACKEND_BASE_URL } from "../../../config/base_url";
+import Swal from "sweetalert2";
 
 export default function TabelIzinGuru({ data, children }) {
   const nav = useNavigate();
@@ -426,17 +427,29 @@ export default function TabelIzinGuru({ data, children }) {
           `${BACKEND_BASE_URL}/api/EditIzinGuru/${idIzin}`,
           izinEdit
         );
-        if (response.status === 200) {
-          window.location.reload();
-        }
+        Swal.fire({
+          title: "Berhasil mengedit izin",
+          showConfirmButton: false,
+          timer: 1000,
+          icon: "success",
+          didClose: () => {
+            window.location.reload();
+          },
+        });
       } else {
         const response = await axios.put(
           `${BACKEND_BASE_URL}/api/EditIzinGuru/${idIzin}`,
           izinEdit
         );
-        if (response.status === 200) {
-          window.location.reload();
-        }
+        Swal.fire({
+          title: "Berhasil mengedit izin",
+          showConfirmButton: false,
+          timer: 1000,
+          icon: "success",
+          didClose: () => {
+            window.location.reload();
+          },
+        });
       }
     } catch (err) {
       console.log(err);

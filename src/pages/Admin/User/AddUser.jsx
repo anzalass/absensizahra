@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_BASE_URL } from "../../../config/base_url";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Swal from "sweetalert2";
 
 export default function AddUser() {
   const nav = useNavigate();
@@ -26,14 +27,22 @@ export default function AddUser() {
     password: "",
     role: "",
     noHP: "",
-    kelas:""
+    kelas: "",
   });
   const tambahPetugas = async () => {
     try {
       const res = await axios.post(`${BACKEND_BASE_URL}/api/Register`, data);
 
       if (res.status === 200) {
-        nav("/AllUsers");
+        Swal.fire({
+          title: "Berhasil menambahkan izin",
+          showConfirmButton: false,
+          timer: 1000,
+          icon: "success",
+          didClose: () => {
+            nav("/AllUsers");
+          },
+        });
       }
     } catch (err) {
       console.log(err);
@@ -43,7 +52,7 @@ export default function AddUser() {
         password: err?.response?.data?.error?.password,
         role: err?.response?.data?.error?.role,
         noHP: err?.response?.data?.error?.noHP,
-        kelas:err?.response?.data?.error?.kelas
+        kelas: err?.response?.data?.error?.kelas,
       });
     }
   };
@@ -62,8 +71,8 @@ export default function AddUser() {
         <Sidebar setSidebar={5} width={open} setWidth={setOpen} />
       </div>
       <div className={` `}>
-        <TopBar>{"Pendaftaran Petugas"}</TopBar>
         <div className="w-[98%] mx-auto">
+          <TopBar>{"Pendaftaran Pengguna"}</TopBar>
           <div className="w-[95%] h-[80px] justify-between flex mx-auto">
             <div className="w-[80%] mx-auto mt-10">
               <div className="w-full mt-4">
@@ -74,7 +83,9 @@ export default function AddUser() {
                   onChange={(e) => changeDataHandler(e)}
                   className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                 />
-                {err.name ? <p>{err.name}</p> : null}
+                {err.name ? (
+                  <p className="text-sm text-red-500">*{err.name}</p>
+                ) : null}
               </div>
               <div className="w-full mt-4">
                 <h1 className="font-abc pb-2">Email</h1>
@@ -84,7 +95,9 @@ export default function AddUser() {
                   onChange={(e) => changeDataHandler(e)}
                   className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                 />
-                {err.email ? <p>{err.email}</p> : null}
+                {err.email ? (
+                  <p className="text-sm text-red-500">*{err.email}</p>
+                ) : null}
               </div>
               <div className="w-full mt-4 relative">
                 <h1 className="font-abc pb-2">Password</h1>
@@ -107,7 +120,9 @@ export default function AddUser() {
                     size={24}
                   />
                 )}
-                {err.password ? <p>{err.password}</p> : null}
+                {err.password ? (
+                  <p className="text-sm text-red-500">*{err.password}</p>
+                ) : null}
               </div>
               <div className="w-full mt-4">
                 <h1 className="font-abc pb-2">No HP</h1>
@@ -117,7 +132,9 @@ export default function AddUser() {
                   onChange={(e) => changeDataHandler(e)}
                   className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                 />
-                {err.noHP ? <p>{err.noHP}</p> : null}
+                {err.noHP ? (
+                  <p className="text-sm text-red-500">*{err.noHP}</p>
+                ) : null}
               </div>
               <div className="w-full mt-4">
                 <h1 className="font-abc pb-2 ">Role</h1>
@@ -133,7 +150,9 @@ export default function AddUser() {
                   <option value="2">Guru Pengajar</option>
                   <option value="3">Guru Piket</option>
                 </select>
-                {err.role ? <p>{err.role}</p> : null}
+                {err.role ? (
+                  <p className="text-sm text-red-500">*{err.role}</p>
+                ) : null}
               </div>
               {data.role === "1" ? (
                 <div className="w-full mt-4">
@@ -144,7 +163,9 @@ export default function AddUser() {
                     onChange={(e) => changeDataHandler(e)}
                     className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                   />
-                  {err.kelas ? <p>{err.kelas}</p> : null}
+                  {err.kelas ? (
+                    <p className="text-sm text-red-500">*{err.kelas}</p>
+                  ) : null}
                 </div>
               ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
@@ -155,7 +176,7 @@ export default function AddUser() {
                   Simpan
                 </button>
                 <button
-                  onClick={() => nav("/home")}
+                  onClick={() => nav("/AllUsers")}
                   className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
                 >
                   Batal

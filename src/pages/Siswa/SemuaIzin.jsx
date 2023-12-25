@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 export default function SemuaIzin() {
   const [Izin, setIzin] = useState([]);
   const [izinSearch, setIzinSearch] = useState([]);
-  const {user} = useSelector((state)=> state.user);
+  const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
     fetchData();
@@ -24,14 +24,21 @@ export default function SemuaIzin() {
     if (e.target.value == "") {
       setIzinSearch(Izin);
     } else {
-      const filterIzin = Izin.filter((item) => item.idUser == e.target.value || item.guruPengajar == e.target.value || item.guruPiket == e.target.value);
+      const filterIzin = Izin.filter(
+        (item) =>
+          item.idUser == e.target.value ||
+          item.guruPengajar == e.target.value ||
+          item.guruPiket == e.target.value
+      );
       setIzinSearch(filterIzin);
     }
-  }
+  };
 
   const fetchData = async () => {
     try {
-      const result = await axios.get(`${BACKEND_BASE_URL}/api/getIzin/${user.id}`);
+      const result = await axios.get(
+        `${BACKEND_BASE_URL}/api/getIzin/${user.id}`
+      );
       setIzin(result.data.results);
       setIzinSearch(result.data.results);
       console.log(result.data.results);
@@ -53,23 +60,10 @@ export default function SemuaIzin() {
       <div className={`w-11/12 mx-auto`}>
         <TopBar>{"Semua Izin"}</TopBar>
         <div className="w-[95%] h-[10px] lg:justify-between justify-center xl:justify-between mx-auto flex">
-          <div className="">
-
-          </div>
-          {/* {addIzin ? null : (
-            <div className=" mt-5 px-3 py-1 w-[200px] h-[40px] rounded-md  font-abc">
-              <input
-                type="text"
-                onChange={e => onChangeSearch(e)}
-                className="w-full h-full pl-2 rounded-lg"
-                placeholder="Search"
-              />
-            </div>
-          )} */}
+          <div className=""></div>
         </div>
 
         {!addIzin ? <TableTambahBarang data={izinSearch} /> : null}
-
       </div>
     </div>
   );

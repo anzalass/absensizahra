@@ -38,25 +38,12 @@ export default function IzinGuru() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="w-full min-h-screen mb-[100px] flex">
+    <div className="w-full min-h-screen mb-[50px] flex">
       <div className={``}>
         <Sidebar setSidebar={3} width={open} setWidth={setOpen} />
       </div>
       <div className={`w-11/12 mx-auto`}>
         <TopBar>{"Permintaan Izin Saya"}</TopBar>
-        <div className="w-[95%] h-[80px] lg:justify-between justify-center xl:justify-between mx-auto flex">
-          <div className=""></div>
-          {addIzin ? null : (
-            <div className=" mt-5 px-3 py-1 w-[200px] h-[40px] rounded-md  font-abc">
-              <input
-                type="text"
-                className="w-full h-full pl-2 rounded-lg"
-                placeholder="Search"
-              />
-            </div>
-          )}
-        </div>
-        <div className="w-[95%] opacity-25 mx-auto mt-0 h-[1px] bg-slate-600"></div>
 
         {!addIzin ? <TabelIzinGuru data={Izin} /> : null}
       </div>

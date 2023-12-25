@@ -19,6 +19,7 @@ import MapelSiswa from "./pages/Admin/MataPelajaran/MapelSiswa";
 import EditProfilePage from "./pages/EditProfilePage";
 import ChangePassword from "./pages/Admin/User/ChangePassword";
 import LandingPage from "./pages/LandingPage";
+import PermintaanIzinSiswa from "./pages/Kurikulum/PermintaanIzinSiswa";
 
 function App() {
   const { isLogin, user } = useSelector((state) => state.user);
@@ -60,6 +61,10 @@ function App() {
           <Routes>
             <Route path="/home" element={<HomePage />} />
             <Route path="/PermintaanIzin" element={<SemuaIzinGuru />} />
+            <Route
+              path="/PermintaanIzinSiswa"
+              element={<PermintaanIzinSiswa />}
+            />
             <Route path="/Detail/:id" element={<DetailIzin />} />
             <Route path="/Profile" element={<EditProfilePage />} />
           </Routes>

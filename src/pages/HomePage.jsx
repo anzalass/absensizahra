@@ -28,7 +28,7 @@ export default function HomePage() {
           </TopBar>
           <div className="w-full mt-2 h-[50px] ">
             <div className="">
-              <h1 className="text-[10px] font-abc ml-6 ">
+              <h1 className="text-[17px] font-abc ml-6 ">
                 Selamat datang{" "}
                 <span className="font-[500]">, {user?.name} </span>
               </h1>
