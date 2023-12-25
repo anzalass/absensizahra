@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { BACKEND_BASE_URL } from "../../../config/base_url";
 import { edit } from "@cloudinary/url-gen/actions/animated";
 import { Checkbox } from "@mui/material";
+import Swal from "sweetalert2";
 
 export default function TabelBarang({ data, children }) {
   const nav = useNavigate();
@@ -80,7 +81,7 @@ export default function TabelBarang({ data, children }) {
     idMapel: "",
     kelas: "",
     guruPengajar: "",
-    kurikulum:"",
+    kurikulum: "",
     jamKeluar: "",
     jamMasuk: "",
     keterangan: "",
@@ -234,7 +235,9 @@ export default function TabelBarang({ data, children }) {
     const getGuruPengajar = await axios.get(
       `${BACKEND_BASE_URL}/api/getGuruPengajar`
     );
-    const getKurikulum = await axios.get(`${BACKEND_BASE_URL}/api/getKurikulum`);
+    const getKurikulum = await axios.get(
+      `${BACKEND_BASE_URL}/api/getKurikulum`
+    );
     const getAllUser = await axios.get(`${BACKEND_BASE_URL}/api/getUser`);
 
     setMapel(getMapel.data.results);
@@ -298,20 +301,24 @@ export default function TabelBarang({ data, children }) {
         `${BACKEND_BASE_URL}/api/requestIzin`,
         izin
       );
-
       if (response.status === 200) {
-        console.log("res : ", response);
-        window.location.reload();
-        // window.location.href = `${BASE_URL}owner/pengadaan-barang`;
+        Swal.fire({
+          showConfirmButton: false,
+          title: "Berhasil mengajukan izin",
+          timer: 1000,
+          icon: "success",
+          didClose: () => {
+            window.location.reload();
+          },
+        });
       }
     } catch (err) {
       console.error(err.response.data.error);
-      setErrorIzin(err.response.data.error)
+      setErrorIzin(err.response.data.error);
     }
   };
 
   const editBarangFunc = async (id) => {
-    console.log("testtttttt : ");
     try {
       setIdIzin(id);
       setEditBarang(!editBarang);
@@ -326,10 +333,6 @@ export default function TabelBarang({ data, children }) {
       setErrorIzin(err);
     }
   };
-
-  // useEffect(()=>{
-  //   console.log("ini izin edit : ", izinEdit[0]);
-  // },[izinEdit])
 
   const EditIzin = async () => {
     try {
@@ -355,7 +358,15 @@ export default function TabelBarang({ data, children }) {
           izinEdit
         );
         if (response.status === 200) {
-          window.location.reload();
+          Swal.fire({
+            title: "Berhasil mengedit izin",
+            showConfirmButton: false,
+            timer: 1000,
+            icon: "success",
+            didClose: () => {
+              window.location.reload();
+            },
+          });
         }
       } else {
         const response = await axios.put(
@@ -363,7 +374,15 @@ export default function TabelBarang({ data, children }) {
           izinEdit
         );
         if (response.status === 200) {
-          window.location.reload();
+          Swal.fire({
+            title: "Berhasil mengedit izin",
+            showConfirmButton: false,
+            timer: 1000,
+            icon: "success",
+            didClose: () => {
+              window.location.reload();
+            },
+          });
         }
       }
     } catch (err) {
@@ -521,23 +540,7 @@ export default function TabelBarang({ data, children }) {
                 </select>
                 {errIzin.kurikulum ? <p>{errIzin.kurikulum}</p> : null}
               </div>
-              {isBukti && izin.typeIzin == "Masuk" ? (
-                <div className="w-full mt-4">
-                  <label
-                    htmlFor="buktiNota"
-                    className="border-2 border-slate-500 px-2 py-1 text-sm font-abc rounded-md"
-                  >
-                    Pilih Foto
-                  </label>
-                  <input
-                    type="file"
-                    name="buktiNota"
-                    id="buktiNota"
-                    onChange={(e) => setImg(e.target.files[0])}
-                    className="hidden border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                  />
-                </div>
-              ) : null}
+
               {izin.typeIzin == "Keluar" ? (
                 <>
                   <div className="w-full mt-4">
@@ -606,6 +609,23 @@ export default function TabelBarang({ data, children }) {
                   </div>
                 </>
               )}
+              {isBukti && izin.typeIzin == "Masuk" ? (
+                <div className="w-full mt-4">
+                  <label
+                    htmlFor="buktiNota"
+                    className="border-2 border-slate-500 px-2 py-1 text-sm font-abc rounded-md"
+                  >
+                    Pilih Foto
+                  </label>
+                  <input
+                    type="file"
+                    name="buktiNota"
+                    id="buktiNota"
+                    onChange={(e) => setImg(e.target.files[0])}
+                    className="hidden border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
+                  />
+                </div>
+              ) : null}
               <div className="w-full mt-4">
                 <textarea
                   name="keterangan"
@@ -613,7 +633,7 @@ export default function TabelBarang({ data, children }) {
                   onChange={(e) => changeIzinHandler(e)}
                   id="comment"
                   rows="4"
-                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-black focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="block p-2.5 w-full pl-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-black focus:ring-blue-500 focus:border-blue-500  dark:focus:ring-blue-50"
                   placeholder="Keterangan"
                 ></textarea>
               </div>
@@ -718,13 +738,13 @@ export default function TabelBarang({ data, children }) {
               ) : null}
               <div className="w-full mt-4">
                 <h1 className="font-abc pb-2 ">Mata Pelajaran</h1>
-                  <input
-                    type="text"
-                    value={izinEdit.idMapel}
-                    name="idMapel"
-                    onChange={(e) => changeIzinEditHandler(e)}
-                    className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                  />
+                <input
+                  type="text"
+                  value={izinEdit.idMapel}
+                  name="idMapel"
+                  onChange={(e) => changeIzinEditHandler(e)}
+                  className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
+                />
                 {errIzin.idMapel ? <p>{errIzin.idMapel}</p> : null}
               </div>
               <div className="w-full mt-4">
@@ -839,23 +859,7 @@ export default function TabelBarang({ data, children }) {
                     />
                     {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
                   </div>
-                  {isBukti && izinEdit.typeIzin == "Masuk" ? (
-                    <div className="w-full mt-4">
-                      <label
-                        htmlFor="buktiNota"
-                        className="border-2 border-slate-500 px-2 py-1 text-sm font-abc rounded-md"
-                      >
-                        Pilih Foto
-                      </label>
-                      <input
-                        type="file"
-                        name="buktiNota"
-                        id="buktiNota"
-                        onChange={(e) => setImg(e.target.files[0])}
-                        className="hidden border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                      />
-                    </div>
-                  ) : null}
+
                   <div className="flex items-center mt-4 mb-4">
                     <input
                       onChange={() => setIsBukti(!isBukti)}
@@ -873,6 +877,23 @@ export default function TabelBarang({ data, children }) {
                   </div>
                 </>
               )}
+              {isBukti && izinEdit.typeIzin == "Masuk" ? (
+                <div className="w-full mt-4">
+                  <label
+                    htmlFor="buktiNota"
+                    className="border-2 border-slate-500 px-2 py-1 text-sm font-abc rounded-md"
+                  >
+                    Pilih Foto
+                  </label>
+                  <input
+                    type="file"
+                    name="buktiNota"
+                    id="buktiNota"
+                    onChange={(e) => setImg(e.target.files[0])}
+                    className="hidden border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
+                  />
+                </div>
+              ) : null}
               <div className="w-full mt-4">
                 <textarea
                   value={izinEdit.keterangan}
@@ -880,7 +901,7 @@ export default function TabelBarang({ data, children }) {
                   onChange={(e) => changeIzinEditHandler(e)}
                   id="comment"
                   rows="4"
-                  className="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
+                  className="w-full px-0  pl-3 text-sm text-gray-900 bg-white border-[1px] border-black rou"
                   placeholder="Keterangan"
                   required
                 ></textarea>

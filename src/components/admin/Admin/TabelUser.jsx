@@ -8,6 +8,7 @@ import Spinner from "../../layout/Spinner";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { BACKEND_BASE_URL, BASE_URL } from "../../../config/base_url";
+import Swal from "sweetalert2";
 
 export default function TabelUser({ data, children }) {
   const nav = useNavigate();
@@ -71,17 +72,39 @@ export default function TabelUser({ data, children }) {
     setAllUser(getMapel.data.results);
   };
 
-  const deletePetugas = async (id) => {
+  const deletePetugas = async (id, name) => {
     try {
-      const res = await axios.delete(
-        `${BACKEND_BASE_URL}/api/deleteUser/${id}`
-      );
-
-      if (res.status == 200) {
-        window.location.reload();
-      }
-    } catch (err) {
-      console.log(err);
+      Swal.fire({
+        title: `Apakah kamu yakin ingin menghapus?, ${name}`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const res = axios.delete(`${BACKEND_BASE_URL}/api/deleteUser/${id}`);
+          if (res.status == 200) {
+            Swal.fire({
+              title: "Terhaous",
+              text: "User berhasil dihapus",
+              icon: "success",
+              showConfirmButton: false,
+              timer: 1000,
+              didClose: () => {
+                window.location.reload();
+              },
+            });
+          }
+        }
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: "Gagal menghapus",
+        showCancelButton: false,
+        timer: 1000,
+      });
     }
   };
 
@@ -112,8 +135,7 @@ export default function TabelUser({ data, children }) {
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
             new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
-            (keyword === "" || item.name === keyword)
-
+          (keyword === "" || item.name === keyword)
       )
       .forEach((a, index) => {
         row.push({
@@ -165,7 +187,10 @@ export default function TabelUser({ data, children }) {
       renderCell: (params) => {
         return (
           <div className="flex">
-            <button onClick={() => deletePetugas(params.id)} className="mr-4">
+            <button
+              onClick={() => deletePetugas(params.id, params?.row?.nama)}
+              className="mr-4"
+            >
               <BsTrash3 color="red" size={20} />
             </button>
             <button className="" onClick={() => nav(`/EditUser/${params.id}`)}>
@@ -273,13 +298,16 @@ export default function TabelUser({ data, children }) {
                     <div className="flex">
                       <input
                         type="text"
-                        onChange={e=> {console.log(e.target.value); setKeyword(e.target.value)}}
+                        onChange={(e) => {
+                          console.log(e.target.value);
+                          setKeyword(e.target.value);
+                        }}
                         placeholder="cari"
                         className="h-[40px] pl-3 rounded-md w-full border-2 "
                       />
-                      <button className="h-[40px] px-4 text-white font-abc rounded-md bg-[#155f95]">
+                      {/* <button className="h-[40px] px-4 text-white font-abc rounded-md bg-[#155f95]">
                         cari
-                      </button>
+                      </button> */}
                     </div>
                   </form>
                 </div>

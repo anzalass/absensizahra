@@ -4,6 +4,7 @@ import TopBar from "../../../components/layout/TopBar";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_BASE_URL, BASE_URL } from "../../../config/base_url";
+import Swal from "sweetalert2";
 
 export default function EditUser() {
   const nav = useNavigate();
@@ -59,7 +60,15 @@ export default function EditUser() {
         userSelected
       );
       if (res.status === 200) {
-        window.location.href = `${BASE_URL}/AllUsers`;
+        Swal.fire({
+          title: "Berhasil mengupdate pengguna",
+          showConfirmButton: false,
+          timer: 1000,
+          icon: "success",
+          didClose: () => {
+            window.location.reload();
+          },
+        });
       }
     } catch (e) {
       console.log("wkwk error :", e);
@@ -99,7 +108,6 @@ export default function EditUser() {
               name="email"
               onChange={(e) => changeDataHandler(e)}
               value={userSelected.email}
-              disabled={true}
               className="w-full h-[35px] border-2 pl-2 border-slate-500 rounded-md"
             />
             {err.email ? <p>{err.email}</p> : null}
@@ -150,7 +158,7 @@ export default function EditUser() {
                   Kurikulum
                 </option>
               ) : (
-                <option value="3">Kurikulum</option>
+                <option value="5">Kurikulum</option>
               )}
             </select>
             {err.role ? <p>{err.role}</p> : null}

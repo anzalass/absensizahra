@@ -6,6 +6,7 @@ import axios from "axios";
 import { BACKEND_BASE_URL, BASE_URL } from "../../config/base_url";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 export default function DetailIzin() {
   const { id } = useParams();
@@ -43,15 +44,36 @@ export default function DetailIzin() {
 
   const BeriIzin = async (e) => {
     try {
-      const add = await axios.put(
-        `${BACKEND_BASE_URL}/api/BeriIzin/${id}/${user.role}`
-      );
-
-      if (add.status == 200) {
-        window.location.href = `${BASE_URL}/PermintaanIzin`;
-      }
-    } catch (err) {
-      console.log(err);
+      Swal.fire({
+        title: `Apakah kamu yakin ingin mengizinkan?, ${pengaju}`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const add = axios.put(
+            `${BACKEND_BASE_URL}/api/BeriIzin/${id}/${user.role}`
+          );
+          if (add.status == 200) {
+            Swal.fire({
+              title: "Mengizinkan",
+              text: "Behasil mengizinkan",
+              icon: "success",
+              timer: 1000,
+              didClose: () => {
+                // Fungsi ini akan dipanggil setelah SweetAlert ditutup
+                window.location.reload();
+              },
+            });
+          }
+        }
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+      });
     }
   };
 
@@ -60,9 +82,16 @@ export default function DetailIzin() {
       const update = await axios.put(
         `${BACKEND_BASE_URL}/api/TolakPengajuan/${id}/${user.role}`
       );
-
       if (update.status == 200) {
-        window.location.href = `${BASE_URL}/PermintaanIzin`;
+        Swal.fire({
+          title: "Berhasil menolak izin",
+          showConfirmButton: false,
+          timer: 1000,
+          icon: "success",
+          didClose: () => {
+            window.location.href = `${BASE_URL}/PermintaanIzin`;
+          },
+        });
       }
     } catch (err) {
       console.log(err);
@@ -93,10 +122,20 @@ export default function DetailIzin() {
 
       if (res.status == 200) {
         if (user?.role == 2) {
-          window.location.href = "/PermintaanIzinGuru";
+          setTimeout(() => {
+            window.location.href = "/PermintaanIzinGuru";
+          }, 1000);
         } else {
-          window.location.href = "/Izin";
+          setTimeout(() => {
+            window.location.href = "/Izin";
+          }, 1000);
         }
+        Swal.fire({
+          title: "Berhasil membatalkan izin",
+          showConfirmButton: false,
+          timer: 1000,
+          icon: "success",
+        });
       }
     } catch (err) {
       console.log(err);
@@ -235,7 +274,7 @@ export default function DetailIzin() {
                   </div>
                 </>
               ) : null}
-              { izin[0].kurikulum != null ? (
+              {izin[0].kurikulum != null ? (
                 <>
                   <div className="flex w-full ">
                     <div className="w-[20%]">
@@ -266,7 +305,7 @@ export default function DetailIzin() {
                     </div>
                   </div>
                 </>
-              ) :null}
+              ) : null}
               <div className="flex w-full ">
                 <div className="w-[20%]">
                   {" "}
@@ -288,7 +327,7 @@ export default function DetailIzin() {
                 (user?.role == 5 &&
                   izin[0].responKurikulum == "pending" &&
                   izin[0].idUser != user.id) ? (
-                  <div className="w-full justify-center mt-12 mb-[100px] flex items-center mb-[50px]">
+                  <div className="w-full justify-center mt-12 mb-[100px] flex items-center ">
                     <button
                       onClick={(e) => BeriIzin(e)}
                       className="bg-[#155f95] px-3 py-1 w-[140px] rounded-md text-[#E5D5F2] font-abc"

@@ -8,6 +8,7 @@ import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../../config/base_url";
+import Swal from "sweetalert2";
 export default function Sidebar({ open, setSidebar, width, setWidth }) {
   const { user } = useSelector((state) => state.user);
   let sidebarMenu = [];
@@ -54,11 +55,6 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
         url: "/AllUsers",
         icon: <BsPencilSquare className="my-auto" />,
       },
-      // {
-      //   title: "Mata Pelajaran",
-      //   url: "/MataPelajaran",
-      //   icon: <BsPencilSquare className="my-auto" />,
-      // },
     ];
   } else if (user.role == 5) {
     sidebarMenu = [
@@ -68,7 +64,12 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
         icon: <GrHomeRounded className={` fill-white  my-auto`} />,
       },
       {
-        title: "Permintaan Izin",
+        title: "Permintaan Izin Siswa",
+        url: "/PermintaanIzinSiswa",
+        icon: <GrHomeRounded className={` fill-white  my-auto`} />,
+      },
+      {
+        title: "Permintaan Izin Guru",
         url: "/PermintaanIzin",
         icon: <BsPencilSquare className="my-auto" />,
       },
@@ -77,18 +78,34 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
 
   const logout = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+      Swal.fire({
+        title: `Apakah kamu yakin ingin keluar?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const res = fetch("http://localhost:8000/api/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
 
-      if (res) {
-        localStorage.removeItem("token");
-        window.location.href = `${BASE_URL}`;
-      }
+          if (res) {
+            localStorage.removeItem("token");
+            window.location.href = `${BASE_URL}`;
+          }
+        }
+      });
     } catch (err) {
-      alert(err);
+      Swal.fire({
+        icon: "error",
+        text: "Error logout",
+        showCancelButton: false,
+        timer: 1000,
+      });
     }
   };
 
@@ -147,7 +164,7 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
               onClick={logout}
               className={`flex mt-2 bg-white text-black cursor-pointer h-[30px] rounded-md p-1 pl-3`}
             >
-              <HiMiniClipboardDocumentList className="my-auto" />,
+              <GrLogout className="my-auto" />,
               <h1 className={`ml-2 font-abc my-auto text-[14px]`}>Logout</h1>
             </div>
           </div>
