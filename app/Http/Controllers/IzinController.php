@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Izin;
 use App\Http\Requests\IzinRequest;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class IzinController extends Controller
 {
@@ -23,28 +24,12 @@ class IzinController extends Controller
     }
 
     public function DashboardSiswa($id){
-        $izinMasuk = Izin::where("typeIzin","Masuk")->where("id", $id)->get();
-        $izinKeluar = Izin::where("typeIzin","Keluar")->where("id", $id)->get();
-        $izinPulang = Izin::where("typeIzin","Pulang")->where("id", $id)->get();
-        $izinDiizinkan = Izin::where("typeIzin","Diizinkan")->where("id", $id)->get();
-        $izinDitolak = Izin::where("typeIzin","Ditolak")->where("id", $id)->get();
-
-        return response()->json([
-            "masuk"=>count($izinMasuk),
-            "keluar"=>count($izinKeluar),
-            "pulang"=>count($izinPulang),
-            "diizinkan"=>count($izinDiizinkan),
-            "ditolak"=>count($izinDitolak)
-        ],200);
-    }
-
-    public function DashboardGuru($idSiswa, $idGuru){
-        $izinMasuk = Izin::where("typeIzin","Masuk")->where("id", $idSiswa)->get();
-        $izinKeluar = Izin::where("typeIzin","Keluar")->where("id", $idSiswa)->get();
-        $izinPulang = Izin::where("typeIzin","Pulang")->where("id", $idSiswa)->get();
-        $izinDiizinkan = Izin::where("typeIzin","Diizinkan")->where("id", $idSiswa)->get();
-        $izinDitolak = Izin::where("typeIzin","Ditolak")->where("id", $idSiswa)->get();
-        $izinGuru = Izin::where("id", $idGuru)->get();
+        $izinMasuk = Izin::where("typeIzin","Masuk")->where("idUser", $id)->get();
+        $izinKeluar = Izin::where("typeIzin","Keluar")->where("idUser", $id)->get();
+        $izinPulang = Izin::where("typeIzin","Pulang")->where("idUser", $id)->get();
+        $izinDiizinkan = Izin::where("statusPengajuan","Diizinkan")->where("idUser", $id)->get();
+        $izinDitolak = Izin::where("statusPengajuan","Ditolak")->where("idUser", $id)->get();
+        $izinPending = Izin::where("statusPengajuan","pending")->where("idUser", $id)->get();
 
         return response()->json([
             "masuk"=>count($izinMasuk),
@@ -52,25 +37,32 @@ class IzinController extends Controller
             "pulang"=>count($izinPulang),
             "diizinkan"=>count($izinDiizinkan),
             "ditolak"=>count($izinDitolak),
-            "izinGuru"=>count($izinGuru)
+            "pending"=>count($izinPending)
         ],200);
     }
 
-    public function DashboardKurikulum($id){
-        $izinMasuk = Izin::where("typeIzin","Masuk")->where("kurikulum", $id)->get();
-        $izinKeluar = Izin::where("typeIzin","Keluar")->where("kurikulum", $id)->get();
-        $izinPulang = Izin::where("typeIzin","Pulang")->where("kurikulum", $id)->get();
-        $izinDiizinkan = Izin::where("typeIzin","Diizinkan")->where("kurikulum", $id)->get();
-        $izinDitolak = Izin::where("typeIzin","Ditolak")->where("kurikulum", $id)->get();
+    public function DashboardGuru($idGuru){
+        $izinMasuk = Izin::where("typeIzin","Masuk")->where("idUser", $idGuru)->get();
+        $izinKeluar = Izin::where("typeIzin","Keluar")->where("idUser", $idGuru)->get();
+        $izinPulang = Izin::where("typeIzin","Pulang")->where("idUser", $idGuru)->get();
+        $izinDiizinkan = Izin::where("statusPengajuan","Diizinkan")->where("idUser", $idGuru)->get();
+        $izinDitolak = Izin::where("statusPengajuan","Ditolak")->where("idUser", $idGuru)->get();
+        $pengajuanSiswa = Izin::where("guruPengajar", $idGuru)->where("statusPengajuan","pending")->get();
+        $totalSiswa = Izin::where("guruPengajar", $idGuru)->get();
+        $menungguPersetujuan = Izin::where("idUser", $idGuru)->where("responKurikulum", "pending")->where("statusPengajuan","pending")->get();
 
         return response()->json([
             "masuk"=>count($izinMasuk),
             "keluar"=>count($izinKeluar),
             "pulang"=>count($izinPulang),
             "diizinkan"=>count($izinDiizinkan),
-            "ditolak"=>count($izinDitolak)
+            "ditolak"=>count($izinDitolak),
+            "pengajuanSiswa"=>count($pengajuanSiswa),
+            "totalSiswa" =>count($totalSiswa),
+            "menungguPersetujuan"=> count($menungguPersetujuan)
         ],200);
     }
+
 
     public function getIzinByKurikulumId($id){
         $result = Izin::where('kurikulum', $id)->get();
@@ -172,7 +164,11 @@ class IzinController extends Controller
                     'kelas' => 'required|string',
                     'guruPengajar' => 'required',
                     'keterangan'=> 'required',
-                    'jamMasuk' => 'required',
+                    'jamMasuk' => [
+                        'required',
+                        'date_format:H:i', // Pastikan format waktu valid
+                        'after:08:00',     // Pastikan setelah 08:00
+                    ],
                     'typeIzin'=> 'required',
                 ]);
             }else if($request->typeIzin == 'Keluar'){
@@ -181,18 +177,31 @@ class IzinController extends Controller
                     'idMapel' => 'required',
                     'kelas' => 'required|string',
                     'guruPengajar' => 'required',
-                    'jamKeluar'=> 'required',
-                    'jamMasuk'=> 'required',
+                    'jamMasuk' => [
+                        'required',
+                        'date_format:H:i', // Pastikan format waktu valid
+                        'after:08:00',     // Pastikan setelah 08:00
+                    ],
+                    'jamKeluar' => [
+                        'required',
+                        'date_format:H:i', // Pastikan format waktu valid
+                        'after:08:00',     // Pastikan setelah 08:00
+                    ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
                 ]);
+
             }else if($request->typeIzin == 'Pulang'){
                 $validator = Validator::make($request->all(),[
                     'idUser' => 'required',
                     'idMapel' => 'required',
                     'kelas' => 'required|string',
                     'guruPengajar' => 'required',
-                    'jamKeluar'=> 'required',
+                    'jamKeluar' => [
+                        'required',
+                        'date_format:H:i',
+                        'after:08:00',    
+                    ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
                 ]);
@@ -300,6 +309,7 @@ class IzinController extends Controller
                     'jamMasuk'=> $request->jamMasuk,
                     'keterangan'=> $request->keterangan,
                     'typeIzin'=> $request->typeIzin,
+                    'responGuruPengajar' => "pending",
                     'responKurikulum' => "pending",
                 ]);
             }else{
@@ -491,7 +501,8 @@ class IzinController extends Controller
         if($role == 2){
             $getRecord->responGuruPengajar = "Diizinkan";
         }else if($role == 5){
-            $getRecord->responKurikulum = "Diizinkan";        
+            $getRecord->responKurikulum = "Diizinkan";    
+            $getRecord->statusPengajuan = "Diizinkan";      
         }
 
         $getRecord->save();
@@ -510,10 +521,11 @@ class IzinController extends Controller
         }
 
         if($role == 2){
-            $getRecord->responGuruPengajar = "Ditolak";
+            $getRecord->responGuruPengajar = "Ditolak";    
         }else if($role == 5){
             $getRecord->responKurikulum = "Ditolak";
         }
+        $getRecord->statusPengajuan = "Ditolak";  
 
         $getRecord->save();
         return response()->json([

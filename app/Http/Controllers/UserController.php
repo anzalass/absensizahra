@@ -7,6 +7,7 @@ use App\Http\Requests\UserRequest;
 use App\Mail\UserVerification;
 use App\Models\Pengadaan;
 use App\Models\User;
+use App\Models\Izin;
 // use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
 
+
 // use \Illuminate\Http\Response::HTTP_UNAUTHORIZED
 
 class UserController extends BaseController
@@ -27,12 +29,33 @@ class UserController extends BaseController
     public function DashboardAdmin(){
         $siswa = User::where("role", "1")->get();
         $guru = User::where("role","2")->get();
+        $admin = User::where("role","4")->get();
         $kurikulum = User::where("role","5")->get();
 
         return response()->json([
             "siswa"=>count($siswa),
             "guru"=>count($guru),
+            "admin"=>count($admin),
             "kurikulum"=>count($kurikulum),
+        ],200);
+    }
+
+    public function DashboardKurikulum($idKurikulum){
+        $siswa = User::where("role", "1")->get();
+        $guru = User::where("role","2")->get();
+        $admin = User::where("role","4")->get();
+        $kurikulum = User::where("role","5")->get();
+
+        $studentWaiting = Izin::where("kurikulum", $idKurikulum)->whereNotNull("guruPengajar")->where("statusPengajuan","pending")->get();
+        $guruWaiting = Izin::where("kurikulum", $idKurikulum)->whereNull("guruPengajar")->where("statusPengajuan","pending")->get();
+
+        return response()->json([
+            "siswa"=>count($siswa),
+            "guru"=>count($guru),
+            "admin"=>count($admin),
+            "kurikulum"=>count($kurikulum),
+            "siswaWaiting"=>count($studentWaiting),
+            "guruWaiting"=>count($guruWaiting),
         ],200);
     }
 
