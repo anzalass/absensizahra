@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Mail\RespondNotification;
+use App\Mail\SendNotification;
 use App\Models\Izin;
+use App\Models\User;
 use App\Http\Requests\IzinRequest;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class IzinController extends Controller
 {
@@ -166,8 +169,9 @@ class IzinController extends Controller
                     'keterangan'=> 'required',
                     'jamMasuk' => [
                         'required',
-                        'date_format:H:i', // Pastikan format waktu valid
-                        'after:08:00',     // Pastikan setelah 08:00
+                        'date_format:H:i', 
+                        'after:08:00',     
+                        'before:16:00'
                     ],
                     'typeIzin'=> 'required',
                 ]);
@@ -179,13 +183,15 @@ class IzinController extends Controller
                     'guruPengajar' => 'required',
                     'jamMasuk' => [
                         'required',
-                        'date_format:H:i', // Pastikan format waktu valid
-                        'after:08:00',     // Pastikan setelah 08:00
+                        'date_format:H:i', 
+                        'after:08:00',     
+                        'before:16:00'
                     ],
                     'jamKeluar' => [
                         'required',
-                        'date_format:H:i', // Pastikan format waktu valid
-                        'after:08:00',     // Pastikan setelah 08:00
+                        'date_format:H:i', 
+                        'after:08:00',     
+                        'before:16:00'
                     ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
@@ -199,8 +205,9 @@ class IzinController extends Controller
                     'guruPengajar' => 'required',
                     'jamKeluar' => [
                         'required',
-                        'date_format:H:i',
-                        'after:08:00',    
+                        'date_format:H:i', 
+                        'after:08:00',     
+                        'before:16:00' 
                     ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
@@ -263,7 +270,11 @@ class IzinController extends Controller
                     'guruPengajar' => 'required|string',
                     'kurikulum' => 'required|string',
                     'keterangan'=> 'required',
-                    'jamMasuk' => 'required',
+                    'jamMasuk' =>['required',
+                    'date_format:H:i', 
+                    'after:08:00',     
+                    'before:16:00'
+                ],
                     'typeIzin'=> 'required',
                 ]);
             }else if($request->typeIzin == 'Keluar'){
@@ -273,8 +284,16 @@ class IzinController extends Controller
                     'kelas' => 'required|string',
                     'guruPengajar' => 'required|string',
                     'kurikulum' => 'required|string',
-                    'jamKeluar'=> 'required',
-                    'jamMasuk'=> 'required',
+                    'jamKeluar'=> ['required',                    
+                    'date_format:H:i', 
+                    'after:08:00',     
+                    'before:16:00'
+                ],
+                    'jamMasuk'=> ['required',                    
+                    'date_format:H:i', 
+                    'after:08:00',     
+                    'before:16:00'
+                ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
                 ]);
@@ -285,7 +304,11 @@ class IzinController extends Controller
                     'kelas' => 'required|string',
                     'guruPengajar' => 'required|string',
                     'kurikulum' => 'required|string',
-                    'jamKeluar'=> 'required',
+                    'jamKeluar'=> ['required',
+                    'date_format:H:i', 
+                    'after:08:00',     
+                    'before:16:00'
+                ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
                 ]);
@@ -328,10 +351,33 @@ class IzinController extends Controller
                 ]);
             }
 
+            $findGuru = User::find($request->guruPengajar);
+            $findKurikulum = User::find($request->kurikulum);
+
             if($add){
-                return response()->json([
-                    "message" => "Izin Berhasil Diajukan"
-                ],200);
+                try{
+                    
+                    $findGuru['link'] = "http://localhost:5173/Detail/".$add->id;
+                    // $findKurikulum['link'] = "http://localhost:5173/Detail/".$add->id;
+                    $findGuru['pengaju'] = "Siswa";
+                    // $findKurikulum['pengaju'] = "Siswa";
+
+                    Mail::mailer('smtp')->to($findGuru->email)->send(new SendNotification($findGuru));
+                    // Mail::mailer('smtp')->to($findKurikulum->email)->send(new SendNotification($findKurikulum));
+
+                    return response()->json([
+                        "message" => "Izin Berhasil Diajukan",
+                        "guru"=> $findGuru->email,
+                        "kurikulum"=> $findKurikulum->email
+                    ],200);
+                }catch(\Exception $e){
+
+                    return response()->json([
+                        'message' => $e,
+                        "guru"=> $findGuru->email,
+                        "kurikulum"=> $findKurikulum->email
+                    ],500);
+                }
             }
         }catch(\Exception $e){
             return response()->json([
@@ -347,15 +393,27 @@ class IzinController extends Controller
                     'idUser' => 'required',
                     'kurikulum' => 'required',
                     'keterangan'=> 'required',
-                    'jamMasuk' => 'required',
+                    'jamMasuk' => ['required',
+                    'date_format:H:i', 
+                    'after:08:00',     
+                    'before:16:00'
+                ],
                     'typeIzin'=> 'required',
                 ]);
             }else if($request->typeIzin == 'Keluar'){
                 $validator = Validator::make($request->all(),[
                     'idUser' => 'required',
                     'kurikulum' => 'required',
-                    'jamKeluar'=> 'required',
-                    'jamMasuk'=> 'required',
+                    'jamKeluar'=> ['required',
+                    'date_format:H:i', 
+                    'after:08:00',     
+                    'before:16:00'
+                ],
+                    'jamMasuk'=> ['required',                    
+                    'date_format:H:i', 
+                    'after:08:00',     
+                    'before:16:00'
+                ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
                 ]);
@@ -363,7 +421,11 @@ class IzinController extends Controller
                 $validator = Validator::make($request->all(),[
                     'idUser' => 'required',
                     'kurikulum' => 'required',
-                    'jamKeluar'=> 'required',
+                    'jamKeluar'=> ['required',
+                    'date_format:H:i', 
+                    'after:08:00',     
+                    'before:16:00'
+                ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
                 ]);
@@ -398,10 +460,27 @@ class IzinController extends Controller
                 ]);
             }
 
+            $findKurikulum = User::find($request->kurikulum);
+
             if($add){
-                return response()->json([
-                    "message" => "Izin Berhasil Diajukan"
-                ],200);
+                try{
+                    
+                    $findKurikulum['link'] = "http://localhost:5173/Detail/".$add->id;
+                    $findKurikulum['pengaju'] = "Guru";
+
+                    Mail::mailer('smtp')->to($findKurikulum->email)->send(new SendNotification($findKurikulum));
+
+                    return response()->json([
+                        "message" => "Izin Berhasil Diajukan",
+                        "kurikulum"=> $findKurikulum->email
+                    ],200);
+                }catch(\Exception $e){
+
+                    return response()->json([
+                        'message' => $e,
+                        "kurikulum"=> $findKurikulum->email
+                    ],500);
+                }
             }
         }catch(\Exception $e){
             return response()->json([
@@ -424,7 +503,11 @@ class IzinController extends Controller
                     $validator = Validator::make($request->all(),[
                         'idUser' =>'required',
                         'kurikulum' =>'required',
-                        'jamMasuk' => 'required',
+                        'jamMasuk' => ['required',
+                        'date_format:H:i', 
+                        'after:08:00',     
+                        'before:16:00'
+                    ],
                         'keterangan'=> 'required',
                         'typeIzin'=> 'required',
                     ]);
@@ -432,8 +515,16 @@ class IzinController extends Controller
                     $validator = Validator::make($request->all(),[
                         'idUser' =>'required',
                         'kurikulum' =>'required',
-                        'jamKeluar'=> 'required',
-                        'jamMasuk'=> 'required',
+                        'jamKeluar'=> ['required',
+                        'date_format:H:i', 
+                        'after:08:00',     
+                        'before:16:00'
+                    ],
+                        'jamMasuk'=> ['required',
+                        'date_format:H:i', 
+                        'after:08:00',     
+                        'before:16:00'
+                    ],
                         'keterangan'=> 'required',
                         'typeIzin'=> 'required',
                     ]);
@@ -441,7 +532,11 @@ class IzinController extends Controller
                     $validator = Validator::make($request->all(),[
                         'idUser' =>'required',
                         'kurikulum' =>'required',
-                        'jamKeluar'=> 'required',
+                        'jamKeluar'=> ['required',
+                        'date_format:H:i', 
+                        'after:08:00',     
+                        'before:16:00'
+                    ],
                         'keterangan'=> 'required',
                         'typeIzin'=> 'required',
                     ]);
@@ -498,12 +593,29 @@ class IzinController extends Controller
             ],404);
         }
 
+        $findPengaju = User::find($getRecord->idUser);
+
         if($role == 2){
+            $findPengaju['link'] = "http://localhost:5173/Detail/".$id;
+            $findPengaju['perespon'] = "Guru";
+            $findPengaju['respon'] = "Diizinkan";
+
             $getRecord->responGuruPengajar = "Diizinkan";
+
+            $findKurikulum = User::find($getRecord->kurikulum);
+            $findKurikulum['link'] = "http://localhost:5173/Detail/".$id;
+            $findKurikulum['pengaju'] = "Siswa";
+            Mail::mailer('smtp')->to($findKurikulum->email)->send(new SendNotification($findKurikulum));
         }else if($role == 5){
+            $findPengaju['link'] = "http://localhost:5173/Detail/".$id;
+            $findPengaju['perespon'] = "Kurikulum";
+            $findPengaju['respon'] = "Diizinkan";
+
             $getRecord->responKurikulum = "Diizinkan";    
             $getRecord->statusPengajuan = "Diizinkan";      
         }
+
+        Mail::mailer('smtp')->to($findPengaju->email)->send(new RespondNotification($findPengaju));
 
         $getRecord->save();
         return response()->json([
@@ -521,11 +633,22 @@ class IzinController extends Controller
         }
 
         if($role == 2){
+            $findPengaju['link'] = "http://localhost:5173/Detail/".$id;
+            $findPengaju['perespon'] = "Guru";
+            $findPengaju['respon'] = "Ditolak";
+
             $getRecord->responGuruPengajar = "Ditolak";    
+
         }else if($role == 5){
+            $findPengaju['link'] = "http://localhost:5173/Detail/".$id;
+            $findPengaju['perespon'] = "Kurikulum";
+            $findPengaju['respon'] = "Ditolak";
+
             $getRecord->responKurikulum = "Ditolak";
         }
         $getRecord->statusPengajuan = "Ditolak";  
+
+        Mail::mailer('smtp')->to($findPengaju->email)->send(new RespondNotification($findPengaju));
 
         $getRecord->save();
         return response()->json([

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UserRequest;
 use App\Mail\UserVerification;
-use App\Models\Pengadaan;
 use App\Models\User;
 use App\Models\Izin;
 // use Facade\FlareClient\Http\Response;
