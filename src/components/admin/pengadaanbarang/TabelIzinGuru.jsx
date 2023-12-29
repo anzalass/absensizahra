@@ -312,15 +312,12 @@ export default function TabelIzinGuru({ data, children }) {
   }
 
   const fetchData = async () => {
-    const getMapel = await axios.get(
-      `${BACKEND_BASE_URL}/api/getMataPelajaran`
-    );
     const getKurikulum = await axios.get(
       `${BACKEND_BASE_URL}/api/getKurikulum`
     );
     const getAllUser = await axios.get(`${BACKEND_BASE_URL}/api/getUser`);
 
-    setMapel(getMapel.data.results);
+   
     setAllUser(getAllUser.data.results);
     setKurikulum(getKurikulum.data.results);
   };
@@ -468,7 +465,9 @@ export default function TabelIzinGuru({ data, children }) {
           (filterBulan === "" ||
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
-            new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
+            new Date(item.created_at).getFullYear() === Number(filterTahun)) && 
+            (status === "" ||
+            item.statusPengajuan === status) &&
           (user?.role == 5
             ? item.kurikulum === user?.id
             : item.idUser === user?.id)
@@ -614,23 +613,7 @@ export default function TabelIzinGuru({ data, children }) {
                 </select>
                 {errIzin.kurikulum ? <p>{errIzin.kurikulum}</p> : null}
               </div>
-              {isBukti && izin.typeIzin == "Masuk" ? (
-                <div className="w-full mt-4">
-                  <label
-                    htmlFor="buktiNota"
-                    className="border-2 border-slate-500 px-2 py-1 text-sm font-abc rounded-md"
-                  >
-                    Pilih Foto
-                  </label>
-                  <input
-                    type="file"
-                    name="buktiNota"
-                    id="buktiNota"
-                    onChange={(e) => setImg(e.target.files[0])}
-                    className="hidden border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                  />
-                </div>
-              ) : null}
+         
               {izin.typeIzin == "Keluar" ? (
                 <>
                   <div className="w-full mt-4">
@@ -699,6 +682,23 @@ export default function TabelIzinGuru({ data, children }) {
                   </div>
                 </>
               )}
+                   {isBukti && izin.typeIzin == "Masuk" ? (
+                <div className="w-full mt-4">
+                  <label
+                    htmlFor="buktiNota"
+                    className="border-2 border-slate-500 px-2 py-1 text-sm font-abc rounded-md"
+                  >
+                    Pilih Foto
+                  </label>
+                  <input
+                    type="file"
+                    name="buktiNota"
+                    id="buktiNota"
+                    onChange={(e) => setImg(e.target.files[0])}
+                    className="hidden border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
+                  />
+                </div>
+              ) : null}
               <div className="w-full mt-4">
                 <textarea
                   name="keterangan"
@@ -1026,8 +1026,9 @@ export default function TabelIzinGuru({ data, children }) {
                         >
                           <option value="">Status</option>
                           <option value="pending">Pending</option>
-                          <option value="accept">Acc</option>
-                          <option value="">All</option>
+                          <option value="Diizinkan">Diizinkan</option>
+                          <option value="Ditolak">Ditolak</option>
+                          <option value="Dibatalkan">Dibatalkan</option>
                         </select>
                       </div>
                     </div>

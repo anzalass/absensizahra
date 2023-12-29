@@ -37,6 +37,7 @@ function App() {
           </Routes>
         ) : user.role === 2 ? (
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route
               path="/PermintaanIzin"
@@ -48,6 +49,7 @@ function App() {
           </Routes>
         ) : user.role === 4 ? (
           <Routes>
+               <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/AllUsers" element={<AllUser />} />
             <Route path="/AddUser" element={<AddUser />} />
@@ -59,6 +61,7 @@ function App() {
           </Routes>
         ) : user.role == 5 ? (
           <Routes>
+               <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/PermintaanIzin" element={<SemuaIzinGuru />} />
             <Route
@@ -70,6 +73,7 @@ function App() {
           </Routes>
         ) : (
           <Routes>
+               <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/Izin" element={<SemuaIzin />} />
             <Route path="/Detail/:id" element={<DetailIzin />} />

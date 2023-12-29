@@ -25,7 +25,7 @@ export default function AdminDetailCard() {
       <div className="w-[80%] mx-auto text-center mt-8 justify-between flex">
         <h1 className="font-abc font-[300] ">Level</h1>
         <h1 className="font-abc font-[500] text-[#622399]">
-          {user?.role == 1 ? "Siswa" : user?.role == 2 ? "Guru Pengajar" : user?.role == 3 ? "Guru Piket" : "Admin"}
+          {user?.role == 1 ? "Siswa" : user?.role == 2 ? "Guru Pengajar" : user?.role == 4 ? "Admin" : "Kurikulum" }
         </h1>
       </div>
       <div className="w-[80%] mx-auto h-[1px] mt-3 bg-[#CDD5DF]"></div>

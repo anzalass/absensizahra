@@ -5,13 +5,14 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
 export default function LandingPage() {
-  const { isLogin } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const nav = useNavigate();
   useEffect(() => {
-    if (isLogin === true) {
+    if (user) {
       nav("/home");
     }
-  }, [isLogin]);
+  }, [user]);
+  console.log(user);
   return (
     <div className="">
       <div className="w-full bg-[#155f95] ">
