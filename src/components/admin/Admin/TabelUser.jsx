@@ -135,7 +135,7 @@ export default function TabelUser({ data, children }) {
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
             new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
-          (keyword === "" || item.name === keyword)
+          (keyword === "" ||  item.name.toLowerCase().includes(keyword.toLowerCase()) || item.email.toLowerCase().includes(keyword.toLowerCase()) || item.noHP.toLowerCase().includes(keyword.toLowerCase()) )
       )
       .forEach((a, index) => {
         row.push({
