@@ -23,7 +23,7 @@ export default function NotfoundPage() {
         </div>
         <div className="flex w-full text-center items-center justify-center mt-[130px]">
           <div className="w-full text-center items-center justify-center flex-grow">
-            <h1 className="text-[49px] font-abc font-bold">Please Wait</h1>
+            <h1 className="text-[49px] font-abc font-bold">404 Not Found</h1>
             <Link to={"/home"}>
               <button className="px-3 mt-3 py-2 bg-[#155f95] text-white rounded-md">
                 Kembali ke Home

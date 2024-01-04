@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 export default function Sidebar({ open, setSidebar, width, setWidth }) {
   const { user } = useSelector((state) => state.user);
   let sidebarMenu = [];
-  if (user.role == 1) {
+  if (user?.role == 1) {
     sidebarMenu = [
       {
         title: "Beranda",
@@ -25,7 +25,7 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
         icon: <BsPencilSquare className="my-auto" />,
       },
     ];
-  } else if (user.role == 2) {
+  } else if (user?.role == 2) {
     sidebarMenu = [
       {
         title: "Beranda",
@@ -43,7 +43,7 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
         icon: <BsPencilSquare className="my-auto" />,
       },
     ];
-  } else if (user.role == 4) {
+  } else if (user?.role == 4) {
     sidebarMenu = [
       {
         title: "Beranda",
@@ -56,7 +56,7 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
         icon: <BsPencilSquare className="my-auto" />,
       },
     ];
-  } else if (user.role == 5) {
+  } else if (user?.role == 5) {
     sidebarMenu = [
       {
         title: "Beranda",
@@ -66,7 +66,9 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
       {
         title: "Permintaan Izin Siswa",
         url: "/PermintaanIzinSiswa",
-        icon: <GrHomeRounded className={` fill-white  my-auto`} />,
+        icon: (
+          <HiMiniClipboardDocumentList className={` fill-white  my-auto`} />
+        ),
       },
       {
         title: "Permintaan Izin Guru",

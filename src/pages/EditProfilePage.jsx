@@ -47,7 +47,7 @@ export default function EditProfilePage({ children }) {
         dataUser
       );
       if (res.status === 200) {
-        window.location.href = `${BASE_URL}owner/pengadaan-barang`;
+        window.location.href = `${BASE_URL}/home`;
       }
     } catch (e) {
       console.log("wkwk error :", e);

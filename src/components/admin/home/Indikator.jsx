@@ -243,7 +243,7 @@ export default function Indikator() {
             <AdminDetailCard />
           </div>
         </div>
-      ) : user.role === 5 ? (
+      ) : user?.role === 5 ? (
         <div className="mt-3 p-3 w-full mx-auto bg-white rounded-lg h-[40vh]  block lg:flex xl:flex md:flex ">
           <div className=" grid grid-cols-2 gap-4  mx-auto lg:w-[50%] xl:w-[50%] md:w-[50%] w-full ">
             <div className="h-[100px] pl-3 pt-6 relative z-30 rounded-md w-[100%] bg-[#155f95]">

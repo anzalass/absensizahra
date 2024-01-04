@@ -6,13 +6,9 @@ import { BsEye, BsTrash3 } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../layout/Spinner";
 import axios from "axios";
-import FotoDetail from "./FotoDetail";
-import EditBarang from "./EditBarang";
-import DetailPengadaan from "./DetailPengadaan";
+
 import { useSelector } from "react-redux";
 import { BACKEND_BASE_URL } from "../../../config/base_url";
-import { edit } from "@cloudinary/url-gen/actions/animated";
-import { Checkbox } from "@mui/material";
 import Swal from "sweetalert2";
 
 export default function TabelIzin({ data, children }) {
@@ -158,7 +154,7 @@ export default function TabelIzin({ data, children }) {
                 ? "bg-green-500"
                 : params.row.statusPengajuan === "Ditolak"
                 ? "bg-red-600"
-                : "bg-gray-400"
+                : "bg-gray-700"
             } h-full text-center pt-3 text-white font-abc w-full `}
           >
             {params.row.statusPengajuan}
@@ -287,26 +283,31 @@ export default function TabelIzin({ data, children }) {
         izin.foto = res.data.secure_url;
       }
 
+      if (izin?.typeIzin === "Keluar") {
+        if (izin?.jamMasuk < izin?.jamKeluar) {
+          swalLoading.close();
+          setErrorIzin({
+            jamMasuk: `Jam masuk tidak boleh kurang dari jam ${izin.jamKeluar}`,
+          });
+          console.log("gaboleh");
+          return;
+        }
+      }
       const response = await axios.post(
         `${BACKEND_BASE_URL}/api/requestIzin`,
         izin
       );
 
-      if (response.status === 200) {
-        console.log("hasil : ", response);
-        Swal.fire({
-          showConfirmButton: false,
-          title: "Berhasil mengajukan izin",
-          timer: 1000,
-          icon: "success",
-          didClose: () => {
-            window.location.reload();
-          },
-        });
-      }
+      Swal.fire({
+        showConfirmButton: false,
+        title: "Berhasil mengajukan izin",
+        timer: 1000,
+        icon: "success",
+      });
+      window.location.reload();
     } catch (err) {
-      setErrorIzin(err.response.data.error);
       swalLoading.close();
+      setErrorIzin(err.response.data.error);
     }
   };
 
@@ -354,7 +355,7 @@ export default function TabelIzin({ data, children }) {
           }
         );
 
-        izinEdit.foto = res.data.secure_url;
+        izinEdit.foto = res?.data.secure_url;
         const response = await axios.put(
           `${BACKEND_BASE_URL}/api/EditIzin/${idIzin}`,
           izinEdit
@@ -487,7 +488,7 @@ export default function TabelIzin({ data, children }) {
               {img && izin.typeIzin == "Masuk" ? (
                 <div className="w-full h-[300px] ">
                   <img
-                    className="w-[40%] rounded-md h-full mx-auto object-contain"
+                    className="w-[60%] rounded-lg h-full mx-auto object-contain"
                     src={URL.createObjectURL(img)}
                     alt=""
                   />
@@ -502,10 +503,8 @@ export default function TabelIzin({ data, children }) {
                   onChange={(e) => changeIzinHandler(e)}
                   className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                 />
-                {errIzin?.guruPengajar ? (
-                  <p className="text-red-500 text-sm">
-                    *{errIzin?.guruPengajar}
-                  </p>
+                {errIzin?.idMapel ? (
+                  <p className="text-red-500 text-sm">*{errIzin?.idMapel}</p>
                 ) : null}
               </div>
 
@@ -755,7 +754,7 @@ export default function TabelIzin({ data, children }) {
                 img == null && izinEdit.foto != null ? (
                   <div className="w-full ">
                     <img
-                      className="w-[50%] mx-auto object-contain"
+                      className="w-[60%] mx-auto rounded-lg object-contain"
                       src={izinEdit.foto}
                       alt=""
                     />
@@ -763,7 +762,7 @@ export default function TabelIzin({ data, children }) {
                 ) : img != null ? (
                   <div className="w-full ">
                     <img
-                      className="w-[50%] mx-auto object-contain"
+                      className="w-[60%] rounded-lg mx-auto object-contain"
                       src={URL.createObjectURL(img)}
                       alt=""
                     />
@@ -846,10 +845,10 @@ export default function TabelIzin({ data, children }) {
               {izinEdit.typeIzin == "Keluar" ? (
                 <>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Keluar</h1>
+                    <h1 className="font-abc pb-2">Jam Keluarr</h1>
                     <input
                       type="time"
-                      value={izinEdit.jamKeluar}
+                      // value={izinEdit.jamKeluar}
                       name="jamKeluar"
                       onChange={(e) =>
                         setIzinEdit({ ...izinEdit, jamKeluar: e.target.value })
@@ -866,7 +865,7 @@ export default function TabelIzin({ data, children }) {
                     <h1 className="font-abc pb-2">Jam Masuk</h1>
                     <input
                       type="time"
-                      value={izinEdit.jamMasuk}
+                      // value={""}
                       name="jamMasuk"
                       onChange={(e) =>
                         setIzinEdit({ ...izinEdit, jamMasuk: e.target.value })
@@ -887,7 +886,7 @@ export default function TabelIzin({ data, children }) {
                     <input
                       type="time"
                       name="jamKeluar"
-                      value={izinEdit.jamKeluar}
+                      // value={izinEdit.jamKeluar}
                       onChange={(e) =>
                         setIzinEdit({ ...izinEdit, jamKeluar: e.target.value })
                       }
@@ -906,7 +905,7 @@ export default function TabelIzin({ data, children }) {
                     <h1 className="font-abc pb-2">Jam Masuk</h1>
                     <input
                       type="time"
-                      value={izinEdit.jamMasuk}
+                      // value={""}
                       name="jamMasuk"
                       onChange={(e) => changeIzinEditHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
@@ -994,7 +993,7 @@ export default function TabelIzin({ data, children }) {
             <div className="bg-white w-[96%] mt-3 mb-[200px]  mx-auto  rounded-lg">
               <div className="lg:flex xl:flex block justify-between">
                 <div className="">
-                  {user.role == 1 ? (
+                  {user?.role == 1 ? (
                     <button
                       onClick={() => setPengadaanBarang(!pengadaanBarang)}
                       className="bg-[#155f95] mt-1 mb-3 px-3 text-center py-1 xl:w-[200px] lg:w-[200px] w-full md:w-[200px] rounded-md text-[#E5D5F2] font-abc"
@@ -1046,7 +1045,7 @@ export default function TabelIzin({ data, children }) {
                           <option value="pending">Pending</option>
                           <option value="Diizinkan">Diizinkan</option>
                           <option value="Ditolak">Ditolak</option>
-                          <option value="Dibatalkan">Dibatalkan</option>
+                          <option value="Batalkan">Batalkan</option>
                         </select>
                       </div>
                     </div>

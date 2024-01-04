@@ -15,7 +15,6 @@ export default function DetailIzin() {
   const [open, setOpen] = useState(false);
   const [allUser, setAllUser] = useState([]);
   const [izin, setIzin] = useState([]);
-  console.log(izin);
   const [mapel, setMapel] = useState([]);
   const [guruPengajar, setGuruPengajar] = useState("");
   const [kurikulum, setKurikulum] = useState("");
@@ -54,7 +53,7 @@ export default function DetailIzin() {
       }).then((result) => {
         if (result.isConfirmed) {
           const add = axios.put(
-            `${BACKEND_BASE_URL}/api/BeriIzin/${id}/${user.role}`
+            `${BACKEND_BASE_URL}/api/BeriIzin/${id}/${user?.role}`
           );
           Swal.fire({
             title: "Mengizinkan",
@@ -99,7 +98,10 @@ export default function DetailIzin() {
             timer: 1000,
             icon: "success",
             didClose: () => {
-              window.location.href = `${BASE_URL}/PermintaanIzin`;
+              window.location.href =
+                user?.role === 5
+                  ? `${BASE_URL}/Detail/${id}`
+                  : `${BASE_URL}/PermintaanIzin`;
             },
           });
         }
@@ -118,15 +120,11 @@ export default function DetailIzin() {
     const getIzinById = await axios.get(
       `${BACKEND_BASE_URL}/api/getIzinById/${id}`
     );
-    const getMapel = await axios.get(
-      `${BACKEND_BASE_URL}/api/getMataPelajaran`
-    );
 
     console.log(getIzinById.data.results);
 
     setAllUser(getAllUser.data.results);
     setIzin(getIzinById.data.results);
-    setMapel(getMapel.data.results);
   };
 
   const BatalkanIzin = async (id) => {
@@ -157,44 +155,85 @@ export default function DetailIzin() {
     }
   };
 
+  const originalDate = new Date(izin[0]?.created_at);
+
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const formattedDate = originalDate.toLocaleDateString("id-ID", options);
+
   return (
-    <div className="w-full min-h-screen flex">
+    <div className="w-full min-h-screen  flex">
       <div className={` `}>
         <Sidebar setSidebar={3} width={open} setWidth={setOpen} />
       </div>
-      <div className={`w-11/12 mx-auto`}>
+      <div
+        className={`w-11/12 mx-auto sm:mb-[200px] mb-[200px] md:mb-[80px] lg:mb-[80px] xl:mb-[80px]`}
+      >
         <TopBar>
-          {"Detail Izin " +
-            izin[0]?.typeIzin +
-            " " +
-            new Date(izin[0]?.created_at).toDateString()}
+          {"Detail Izin " + izin[0]?.typeIzin + " " + formattedDate}
         </TopBar>
-        <div className="w-[95%] mx-auto mt-2 min-h-screen flex">
-          <div className="block w-full font-abc">
-            {izin[0]?.foto ? (
-              <img
-                className="w-[250px] h-[250px] mx-auto object-contain"
-                src={izin[0]?.foto}
-                alt=""
-              />
-            ) : null}
-            <div className="flex w-full ">
-              <div className="w-[20%]">
-                {" "}
-                <h1 className="my-3">Nama</h1>
-              </div>
-              <div className="w-[5%]">
-                {" "}
-                <h1 className="my-3">:</h1>
-              </div>
-              <div className="w-[65%]">
-                {" "}
-                <h1 className="my-3">{pengaju}</h1>
-              </div>
-            </div>
 
-            {izin[0]?.typeIzin == "Keluar" ? (
-              <>
+        {izin ? (
+          <div className="w-[95%] mx-auto mt-2 mb-[80px]  flex">
+            <div className="block w-full font-abc">
+              {izin[0]?.foto ? (
+                <img
+                  className="w-[60%] h-[60%] rounded-lg mx-auto object-contain"
+                  src={izin[0]?.foto}
+                  alt=""
+                />
+              ) : null}
+              <div className="flex w-full ">
+                <div className="w-[20%]">
+                  {" "}
+                  <h1 className="my-3">Nama</h1>
+                </div>
+                <div className="w-[5%]">
+                  {" "}
+                  <h1 className="my-3">:</h1>
+                </div>
+                <div className="w-[65%]">
+                  {" "}
+                  <h1 className="my-3">{pengaju}</h1>
+                </div>
+              </div>
+
+              {izin[0]?.typeIzin == "Keluar" ? (
+                <>
+                  <div className="flex w-full ">
+                    <div className="w-[20%]">
+                      {" "}
+                      <h1 className="my-3">Jam Keluar</h1>
+                    </div>
+                    <div className="w-[5%]">
+                      {" "}
+                      <h1 className="my-3">:</h1>
+                    </div>
+                    <div className="w-[65%]">
+                      {" "}
+                      <h1 className="my-3">{izin[0]?.jamKeluar}</h1>
+                    </div>
+                  </div>
+                  <div className="flex w-full ">
+                    <div className="w-[20%]">
+                      {" "}
+                      <h1 className="my-3">Jam Masuk</h1>
+                    </div>
+                    <div className="w-[5%]">
+                      {" "}
+                      <h1 className="my-3">:</h1>
+                    </div>
+                    <div className="w-[65%]">
+                      {" "}
+                      <h1 className="my-3">{izin[0]?.jamMasuk}</h1>
+                    </div>
+                  </div>
+                </>
+              ) : izin[0]?.typeIzin == "Pulang" ? (
                 <div className="flex w-full ">
                   <div className="w-[20%]">
                     {" "}
@@ -209,6 +248,7 @@ export default function DetailIzin() {
                     <h1 className="my-3">{izin[0]?.jamKeluar}</h1>
                   </div>
                 </div>
+              ) : izin[0]?.typeIzin == "Masuk" ? (
                 <div className="flex w-full ">
                   <div className="w-[20%]">
                     {" "}
@@ -223,12 +263,11 @@ export default function DetailIzin() {
                     <h1 className="my-3">{izin[0]?.jamMasuk}</h1>
                   </div>
                 </div>
-              </>
-            ) : izin[0]?.typeIzin == "Pulang" ? (
+              ) : null}
               <div className="flex w-full ">
                 <div className="w-[20%]">
                   {" "}
-                  <h1 className="my-3">Jam Keluar</h1>
+                  <h1 className="my-3">Tanggal</h1>
                 </div>
                 <div className="w-[5%]">
                   {" "}
@@ -236,139 +275,96 @@ export default function DetailIzin() {
                 </div>
                 <div className="w-[65%]">
                   {" "}
-                  <h1 className="my-3">{izin[0]?.jamKeluar}</h1>
+                  <h1 className="my-3">{formattedDate}</h1>
                 </div>
               </div>
-            ) : null}
-            <div className="flex w-full ">
-              <div className="w-[20%]">
-                {" "}
-                <h1 className="my-3">Tanggal</h1>
-              </div>
-              <div className="w-[5%]">
-                {" "}
-                <h1 className="my-3">:</h1>
-              </div>
-              <div className="w-[65%]">
-                {" "}
-                <h1 className="my-3">
-                  {new Date(izin[0]?.created_at).toDateString()}
-                </h1>
-              </div>
-            </div>
-            {izin[0]?.guruPengajar != null ? (
-              <>
-                <div className="flex w-full ">
-                  <div className="w-[20%]">
-                    {" "}
-                    <h1 className="my-3">Guru Pengajar</h1>
-                  </div>
-                  <div className="w-[5%]">
-                    {" "}
-                    <h1 className="my-3">:</h1>
-                  </div>
-                  <div className="w-[65%]">
-                    {" "}
-                    <h1 className="my-3">{guruPengajar}</h1>
-                  </div>
+
+              <div className="flex w-full ">
+                <div className="w-[20%]">
+                  {" "}
+                  <h1 className="my-3">Status Pengajuan</h1>
                 </div>
-                <div className="flex w-full ">
-                  <div className="w-[20%]">
-                    {" "}
-                    <h1 className="my-3">Status Guru Pengajar</h1>
-                  </div>
-                  <div className="w-[5%]">
-                    {" "}
-                    <h1 className="my-3">:</h1>
-                  </div>
-                  <div className="w-[65%]">
-                    {" "}
-                    <h1 className="my-3">{izin[0]?.responGuruPengajar}</h1>
-                  </div>
+                <div className="w-[5%]">
+                  {" "}
+                  <h1 className="my-3">:</h1>
                 </div>
-              </>
-            ) : null}
-            {izin[0]?.kurikulum != null ? (
-              <>
-                <div className="flex w-full ">
-                  <div className="w-[20%]">
-                    {" "}
-                    <h1 className="my-3">Kurikulum</h1>
-                  </div>
-                  <div className="w-[5%]">
-                    {" "}
-                    <h1 className="my-3">:</h1>
-                  </div>
-                  <div className="w-[65%]">
-                    {" "}
-                    <h1 className="my-3">{kurikulum}</h1>
-                  </div>
+                <div className="w-[65%]">
+                  {" "}
+                  <h1 className="my-3">{izin[0]?.statusPengajuan}</h1>
                 </div>
-                <div className="flex w-full ">
-                  <div className="w-[20%]">
-                    {" "}
-                    <h1 className="my-3">Status Kurikulum</h1>
-                  </div>
-                  <div className="w-[5%]">
-                    {" "}
-                    <h1 className="my-3">:</h1>
-                  </div>
-                  <div className="w-[65%]">
-                    {" "}
-                    <h1 className="my-3">{izin[0]?.responKurikulum}</h1>
-                  </div>
-                </div>
-              </>
-            ) : null}
-            <div className="flex w-full ">
-              <div className="w-[20%]">
-                {" "}
-                <h1 className="my-3">Keterangan</h1>
               </div>
-              <div className="w-[5%]">
-                {" "}
-                <h1 className="my-3">:</h1>
-              </div>
-              <div className="w-[65%]">
-                {" "}
-                <h1 className="my-3">{izin[0]?.keterangan}</h1>
-              </div>
-            </div>
-            {user?.role == 2 || user?.role == 5 ? (
-              (user?.role == 2 &&
-                izin[0]?.responGuruPengajar == "pending" &&
-                izin[0]?.idUser != user.id) ||
-              (user?.role == 5 &&
-                izin[0]?.responKurikulum == "pending" &&
-                izin[0]?.statusPengajuan == "pending" &&
-                izin[0].guruPengajar != null &&
-                izin[0].responGuruPengajar == "Diizinkan" &&
-                izin[0]?.idUser != user.id) ||
-              (user?.role == 5 &&
-                izin[0]?.responKurikulum == "pending" &&
-                izin[0]?.statusPengajuan == "pending" &&
-                izin[0].guruPengajar == null &&
-                izin[0].responGuruPengajar == null &&
-                izin[0]?.idUser != user.id) ? (
-                <div className="w-full justify-center mt-12 mb-[100px] flex items-center ">
-                  <button
-                    onClick={(e) => BeriIzin(e)}
-                    className="bg-[#155f95] px-3 py-1 w-[140px] rounded-md text-[#E5D5F2] font-abc"
-                  >
-                    Izinkan
-                  </button>
-                  <button
-                    onClick={() => TolakPermintaan()}
-                    className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
-                  >
-                    Tolak
-                  </button>
+              <div className="flex w-full ">
+                <div className="w-[20%]">
+                  {" "}
+                  <h1 className="my-3">Keterangan</h1>
                 </div>
-              ) : izin[0]?.idUser == user?.id &&
-                user?.role == 1 &&
-                izin[0]?.responGuruPengajar == "pending" &&
-                izin[0]?.responKurikulum == "pending" &&
-                izin[0]?.statusPengajuan == "pending" ? (
+                <div className="w-[5%]">
+                  {" "}
+                  <h1 className="my-3">:</h1>
+                </div>
+                <div className="w-[65%]">
+                  {" "}
+                  <h1 className="my-3">{izin[0]?.keterangan}</h1>
+                </div>
+              </div>
+
+              {user?.role == 2 || user?.role == 5 ? (
+                (user?.role == 2 &&
+                  izin[0]?.responGuruPengajar == "pending" &&
+                  izin[0]?.idUser != user.id) ||
+                (user?.role == 5 &&
+                  izin[0]?.responKurikulum == "pending" &&
+                  izin[0]?.statusPengajuan == "pending" &&
+                  izin[0].guruPengajar != null &&
+                  izin[0].responGuruPengajar == "Diizinkan" &&
+                  izin[0]?.idUser != user.id) ||
+                (user?.role == 5 &&
+                  izin[0]?.responKurikulum == "pending" &&
+                  izin[0]?.statusPengajuan == "pending" &&
+                  izin[0].guruPengajar == null &&
+                  izin[0].responGuruPengajar == null &&
+                  izin[0]?.idUser != user.id) ? (
+                  <div className="w-full justify-center mt-12 mb-[100px] flex items-center ">
+                    <button
+                      onClick={(e) => BeriIzin(e)}
+                      className="bg-[#155f95] px-3 py-1 w-[140px] rounded-md text-[#E5D5F2] font-abc"
+                    >
+                      Izinkan
+                    </button>
+                    <button
+                      onClick={() => TolakPermintaan()}
+                      className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
+                    >
+                      Tolak
+                    </button>
+                  </div>
+                ) : izin[0]?.idUser == user?.id &&
+                  user?.role == 1 &&
+                  izin[0]?.responGuruPengajar == "pending" &&
+                  izin[0]?.responKurikulum == "pending" &&
+                  izin[0]?.statusPengajuan == "pending" ? (
+                  <div className="w-full justify-center mt-12 mb-12 flex items-center">
+                    <button
+                      onClick={() => BatalkanIzin(izin[0]?.id)}
+                      className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
+                    >
+                      Batalkan
+                    </button>
+                  </div>
+                ) : izin[0]?.idUser == user?.id &&
+                  user?.role == 2 &&
+                  izin[0]?.responKurikulum == "pending" &&
+                  izin[0]?.statusPengajuan == "pending" ? (
+                  <div className="w-full justify-center mt-12 mb-12 flex items-center">
+                    <button
+                      onClick={() => BatalkanIzin(izin[0]?.id)}
+                      className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
+                    >
+                      Batalkan
+                    </button>
+                  </div>
+                ) : null
+              ) : izin[0]?.statusPengajuan == "pending" ? (
                 <div className="w-full justify-center mt-12 mb-12 flex items-center">
                   <button
                     onClick={() => BatalkanIzin(izin[0]?.id)}
@@ -377,52 +373,15 @@ export default function DetailIzin() {
                     Batalkan
                   </button>
                 </div>
-              ) : izin[0]?.idUser == user?.id &&
-                user?.role == 2 &&
-                izin[0]?.responKurikulum == "pending" &&
-                izin[0]?.statusPengajuan == "pending" ? (
-                <div className="w-full justify-center mt-12 mb-12 flex items-center">
-                  <button
-                    onClick={() => BatalkanIzin(izin[0]?.id)}
-                    className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
-                  >
-                    Batalkan
-                  </button>
-                </div>
-              ) : null
-            ) : izin[0]?.statusPengajuan == "pending" ? (
-              <div className="w-full justify-center mt-12 mb-12 flex items-center">
-                <button
-                  onClick={() => BatalkanIzin(izin[0]?.id)}
-                  className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
-                >
-                  Batalkan
-                </button>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <p>please wait...</p>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
-// izin[0]?.idUser == user?.id && user?role == 1  && izin[0]?.responGuruPengajar == "pending" && izin[0]?.responKurikulum == "pending" && izin[0]?.statusPengajuan ==  "pending"? (
-//   <div className="w-full justify-center mt-12 mb-12 flex items-center">
-//     <button
-//       onClick={() => BatalkanIzin(izin[0]?.id)}
-//       className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
-//     >
-//       Batalkan
-//     </button>
-//   </div>
-// ) : izin[0]?.idUser == user?.id && user?role == 2  && izin[0]?.responKurikulum == "pending" && izin[0]?.statusPengajuan ==  "pending"? (
-//   <div className="w-full justify-center mt-12 mb-12 flex items-center">
-//     <button
-//       onClick={() => BatalkanIzin(izin[0]?.id)}
-//       className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
-//     >
-//       Batalkan
-//     </button>
-//   </div>
-// ) : null
