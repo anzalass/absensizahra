@@ -135,8 +135,10 @@ export default function TabelUser({ data, children }) {
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
             new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
-          (keyword === "" ||  item.name.toLowerCase().includes(keyword.toLowerCase()) || item.email.toLowerCase().includes(keyword.toLowerCase()) 
-          || item.noHP.toLowerCase().includes(keyword.toLowerCase()))
+          (keyword === "" ||
+            item.name.toLowerCase().includes(keyword.toLowerCase()) ||
+            item.email.toLowerCase().includes(keyword.toLowerCase()) ||
+            item.noHP.toLowerCase().includes(keyword.toLowerCase()))
       )
       .forEach((a, index) => {
         row.push({
@@ -283,7 +285,7 @@ export default function TabelUser({ data, children }) {
         {!pengadaanBarang && !editBarang ? (
           <div className="">
             <div className="bg-white w-[96%] mt-3 mb-[200px]  mx-auto  rounded-lg">
-              <div className="lg:flex xl:flex block justify-between">
+              <div className="lg:flex xl:flex block ">
                 <div className="">
                   {user.role == 1 ? (
                     <button
@@ -294,6 +296,20 @@ export default function TabelUser({ data, children }) {
                     </button>
                   ) : null}
                 </div>
+                {/* <div className="">
+                  <select
+                    name=""
+                    id="statuss"
+                    onChange={(e) => setStatus(e.target.value)}
+                    className="border h-[34px] rounded-xl mt-2 w-[100px] pl-2 "
+                  >
+                    <option value="">Role</option>
+                    <option value="4">Admin</option>
+                    <option value="2">Guru</option>
+                    <option value="1">Siswa</option>
+                    <option value="2">Kurikulum</option>
+                  </select>
+                </div> */}
                 <div className="mt-1 mb-3 px-3">
                   <form className="block lg:flex xl:flex md:block   md:mt-[0px] lg:mt-0 xl:mt-0  ">
                     <div className="flex">
@@ -303,12 +319,9 @@ export default function TabelUser({ data, children }) {
                           console.log(e.target.value);
                           setKeyword(e.target.value);
                         }}
-                        placeholder="cari"
+                        placeholder="cari pengguna"
                         className="h-[40px] pl-3 rounded-md w-full border-2 "
                       />
-                      {/* <button className="h-[40px] px-4 text-white font-abc rounded-md bg-[#155f95]">
-                        cari
-                      </button> */}
                     </div>
                   </form>
                 </div>

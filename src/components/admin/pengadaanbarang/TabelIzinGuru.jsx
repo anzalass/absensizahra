@@ -161,7 +161,7 @@ export default function TabelIzinGuru({ data, children }) {
                     <button
                       className=""
                       onClick={() => {
-                        editBarangFunc(params.id);
+                        EditIzinFunc(params.id);
                       }}
                     >
                       <BiEditAlt color="blue" size={20} />
@@ -184,7 +184,7 @@ export default function TabelIzinGuru({ data, children }) {
                     <button
                       className=""
                       onClick={() => {
-                        editBarangFunc(params.id);
+                        EditIzinFunc(params.id);
                         resetError();
                       }}
                     >
@@ -283,7 +283,7 @@ export default function TabelIzinGuru({ data, children }) {
                     <button
                       className=""
                       onClick={() => {
-                        editBarangFunc(params.id);
+                        EditIzinFunc(params.id);
                       }}
                     >
                       <BiEditAlt color="blue" size={20} />
@@ -317,7 +317,6 @@ export default function TabelIzinGuru({ data, children }) {
     );
     const getAllUser = await axios.get(`${BACKEND_BASE_URL}/api/getUser`);
 
-   
     setAllUser(getAllUser.data.results);
     setKurikulum(getKurikulum.data.results);
   };
@@ -353,13 +352,24 @@ export default function TabelIzinGuru({ data, children }) {
 
   const ajukanIzin = async (e) => {
     e.preventDefault();
+
+    // Menampilkan Swal.fire loading
+    const swalLoading = Swal.fire({
+      title: "Memproses...",
+      html: "Mohon tunggu...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     try {
       if (img != null) {
         const data = new FormData();
         data.append("file", img);
         data.append("upload_preset", "digikostDemoApp");
         data.append("cloud_name", "dkt6ysk5c");
-
         const res = await axios.post(
           "https://api.cloudinary.com/v1_1/dkt6ysk5c/image/upload",
           data,
@@ -378,18 +388,36 @@ export default function TabelIzinGuru({ data, children }) {
         izin
       );
 
-      if (response.status === 200) {
-        console.log("res : ", response);
-        window.location.reload();
-        // window.location.href = `${BASE_URL}owner/pengadaan-barang`;
-      }
+      // Menutup Swal.fire loading
+
+      console.log("res : ", response);
+
+      // Menampilkan Swal.fire berhasil
+      Swal.fire({
+        icon: "success",
+        title: "Izin berhasil diajukan!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      // Navigasi atau tindakan selanjutnya
+      window.location.reload();
     } catch (err) {
-      console.error(err);
+      console.log(err);
+      // Menutup Swal.fire loading pada error
+      swalLoading.close();
       setErrorIzin(err.response.data.error);
+      // Menampilkan Swal.fire error
+
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Terjadi kesalahan.",
+      });
     }
   };
 
-  const editBarangFunc = async (id) => {
+  const EditIzinFunc = async (id) => {
     try {
       setIdIzin(id);
       setEditBarang(!editBarang);
@@ -401,7 +429,17 @@ export default function TabelIzinGuru({ data, children }) {
     }
   };
 
-  const EditIzin = async () => {
+  const EditIzin = async (e) => {
+    e.preventDefault();
+    const swalLoading = Swal.fire({
+      title: "Memproses...",
+      html: "Mohon tunggu...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     try {
       if (img != null) {
         const data = new FormData();
@@ -450,6 +488,7 @@ export default function TabelIzinGuru({ data, children }) {
       }
     } catch (err) {
       console.log(err);
+      swalLoading.close();
       setErrorIzin(err.response.data.error);
     }
   };
@@ -465,9 +504,8 @@ export default function TabelIzinGuru({ data, children }) {
           (filterBulan === "" ||
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
-            new Date(item.created_at).getFullYear() === Number(filterTahun)) && 
-            (status === "" ||
-            item.statusPengajuan === status) &&
+            new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
+          (status === "" || item.statusPengajuan === status) &&
           (user?.role == 5
             ? item.kurikulum === user?.id
             : item.idUser === user?.id)
@@ -545,7 +583,7 @@ export default function TabelIzinGuru({ data, children }) {
     <>
       <div className="bg-white w-[96%] mt-3  mb-[200px]  mx-auto p-3 rounded-lg">
         {pengadaanBarang ? (
-          <div className="w-[95%] mx-auto h-[130vh] bg-white rounded-xl">
+          <div className="w-[95%] mx-auto min-h-screen bg-white rounded-xl">
             <div action="" className="w-[95%] mx-auto mt-2 p-3">
               <button
                 type="button"
@@ -587,7 +625,7 @@ export default function TabelIzinGuru({ data, children }) {
               {img && izin.typeIzin == "Masuk" ? (
                 <div className="w-full ">
                   <img
-                    className="w-[50%] mx-auto object-contain"
+                    className="w-[50%] h-[50%] rounded-md mx-auto object-contain"
                     src={URL.createObjectURL(img)}
                     alt=""
                   />
@@ -611,9 +649,11 @@ export default function TabelIzinGuru({ data, children }) {
                     );
                   })}
                 </select>
-                {errIzin.kurikulum ? <p>{errIzin.kurikulum}</p> : null}
+                {errIzin?.kurikulum ? (
+                  <p className="text-sm text-red-500">*{errIzin?.kurikulum}</p>
+                ) : null}
               </div>
-         
+
               {izin.typeIzin == "Keluar" ? (
                 <>
                   <div className="w-full mt-4">
@@ -625,10 +665,14 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukk</h1>
                     <input
                       type="time"
                       value={izin.jamMasuk}
@@ -636,7 +680,11 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : izin.typeIzin == "Pulang" ? (
@@ -649,13 +697,17 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : (
                 <>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukkkkkk</h1>
                     <input
                       type="time"
                       value={izin.jamMasuk}
@@ -663,7 +715,11 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="flex items-center mt-4 mb-4">
                     <input
@@ -682,7 +738,7 @@ export default function TabelIzinGuru({ data, children }) {
                   </div>
                 </>
               )}
-                   {isBukti && izin.typeIzin == "Masuk" ? (
+              {isBukti && izin.typeIzin == "Masuk" ? (
                 <div className="w-full mt-4">
                   <label
                     htmlFor="buktiNota"
@@ -710,7 +766,9 @@ export default function TabelIzinGuru({ data, children }) {
                   placeholder="Keterangan"
                 ></textarea>
               </div>
-              {errIzin.keterangan ? <p>{errIzin.keterangan}</p> : null}
+              {errIzin.keterangan ? (
+                <p className="text-sm text-red-500">*{errIzin.keterangan}</p>
+              ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
                   onClick={(e) => ajukanIzin(e)}
@@ -849,10 +907,14 @@ export default function TabelIzinGuru({ data, children }) {
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukkk</h1>
                     <input
                       type="time"
                       value={izinEdit.jamMasuk}
@@ -862,7 +924,11 @@ export default function TabelIzinGuru({ data, children }) {
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : izinEdit.typeIzin == "Pulang" ? (
@@ -878,13 +944,17 @@ export default function TabelIzinGuru({ data, children }) {
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : (
                 <>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukkkkk</h1>
                     <input
                       type="time"
                       value={izinEdit.jamMasuk}
@@ -892,7 +962,11 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinEditHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamMasuk ? <p>{errIzin?.jamMasuk}</p> : null}
+                    {errIzin?.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin?.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                   {isBukti && izinEdit.typeIzin == "Masuk" ? (
                     <div className="w-full mt-4">
@@ -940,10 +1014,12 @@ export default function TabelIzinGuru({ data, children }) {
                   required
                 ></textarea>
               </div>
-              {errIzin?.keterangan ? <p>{errIzin?.keterangan}</p> : null}
+              {errIzin?.keterangan ? (
+                <p className="text-sm text-red-500">*{errIzin?.keterangan}</p>
+              ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
-                  onClick={(e) => EditIzin()}
+                  onClick={(e) => EditIzin(e)}
                   className="bg-[#155f95] px-3 py-1 w-[140px] rounded-md text-[#E5D5F2] font-abc"
                 >
                   Simpan

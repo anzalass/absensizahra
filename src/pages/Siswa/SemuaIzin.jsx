@@ -1,6 +1,6 @@
 import Sidebar from "../../components/layout/Sidebar.jsx";
 import TopBar from "../../components/layout/TopBar.jsx";
-import TableTambahBarang from "../../components/admin/pengadaanbarang/TabelBarang.jsx";
+import TableIzin from "../../components/admin/pengadaanbarang/TabelIzin.jsx";
 import axios, { all } from "axios";
 import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
@@ -63,7 +63,7 @@ export default function SemuaIzin() {
           <div className=""></div>
         </div>
 
-        {!addIzin ? <TableTambahBarang data={izinSearch} /> : null}
+        {!addIzin ? <TableIzin data={izinSearch} /> : null}
       </div>
     </div>
   );

@@ -41,7 +41,7 @@ export default function LandingPage() {
       <div className="w-full relative">
         <img
           src={logo2}
-          className=" object-cover w-[1500px] mt-0 h-[73vh]"
+          className=" object-cover w-full mt-0 h-[73vh]"
           alt=""
         />
         <div className="absolute w-full  h-[73vh] top-0  bg-black opacity-70 flex items-center justify-center ">

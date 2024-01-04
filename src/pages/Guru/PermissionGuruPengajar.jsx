@@ -1,6 +1,6 @@
 import Sidebar from "../../components/layout/Sidebar.jsx";
 import TopBar from "../../components/layout/TopBar.jsx";
-import TableTambahBarang from "../../components/admin/pengadaanbarang/TabelBarang.jsx";
+import TableIzin from "../../components/admin/pengadaanbarang/TabelIzin.jsx";
 import axios, { all } from "axios";
 import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
@@ -44,7 +44,7 @@ export default function PermissionGuruPengajar() {
       <div className={`w-11/12 mx-auto`}>
         <TopBar>{"Permintaan Izin Siswa"}</TopBar>
 
-        {!addIzin ? <TableTambahBarang data={Izin} /> : null}
+        {!addIzin ? <TableIzin data={Izin} /> : null}
       </div>
     </div>
   );
