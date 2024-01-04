@@ -632,6 +632,9 @@ class IzinController extends Controller
             ],404);
         }
 
+        $findPengaju = User::find($getRecord->idUser);
+
+
         if($role == 2){
             $findPengaju['link'] = "http://localhost:5173/Detail/".$id;
             $findPengaju['perespon'] = "Guru";
