@@ -581,7 +581,7 @@ export default function TabelMapel({ data, children }) {
             <div className="bg-white w-[96%] mt-3 mb-[200px]  mx-auto  rounded-lg">
               <div className="lg:flex xl:flex block justify-between">
                 <div className="">
-                  {user.role == 1 ? (
+                  {user?.role == 1 ? (
                     <button
                       onClick={() => setPengadaanBarang(!pengadaanBarang)}
                       className="bg-[#155f95] mt-1 mb-3 px-3 text-center py-1 xl:w-[200px] lg:w-[200px] w-full md:w-[200px] rounded-md text-[#E5D5F2] font-abc"

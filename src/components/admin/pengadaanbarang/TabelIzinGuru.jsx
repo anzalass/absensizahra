@@ -114,8 +114,8 @@ export default function TabelIzinGuru({ data, children }) {
         flex: 0.7,
       },
       {
-        field: "responKurikulum",
-        headerName: "Respon Kurikulum",
+        field: "statusPengajuan",
+        headerName: "Responss",
         headerClassName: "bg-slate-200 text-center font-abc",
         minWidth: 100,
         flex: 0.7,
@@ -124,16 +124,16 @@ export default function TabelIzinGuru({ data, children }) {
           return (
             <div
               className={`${
-                params.row.responKurikulum === "pending"
+                params.row.statusPengajuan === "pending"
                   ? "bg-yellow-400 text-white"
-                  : params.row.responKurikulum === "Diizinkan"
+                  : params.row.statusPengajuan === "Diizinkan"
                   ? "bg-green-500"
-                  : params.row.responKurikulum === "Ditolak"
+                  : params.row.statusPengajuan === "Ditolak"
                   ? "bg-red-600"
                   : "bg-gray-700"
               } h-full text-center pt-3 text-white font-abc w-full `}
             >
-              {params.row.responKurikulum}
+              {params.row.statusPengajuan}
             </div>
           );
         },
@@ -149,38 +149,18 @@ export default function TabelIzinGuru({ data, children }) {
         renderCell: (params) => {
           return (
             <div className="flex">
-              {params.row.status == "pending" ? (
-                params.row.idAdmin == user?.id ? (
-                  <>
-                    <button
-                      className="mr-4"
-                      onClick={() => DeletePengadaan(params.id)}
-                    >
-                      <BsTrash3 color="red" size={20} />
-                    </button>
-                    <button
-                      className=""
-                      onClick={() => {
-                        EditIzinFunc(params.id);
-                      }}
-                    >
-                      <BiEditAlt color="blue" size={20} />
-                    </button>
-                  </>
-                ) : (
-                  <></>
-                )
-              ) : (
-                <>
-                  <button
-                    className="mr-4"
-                    onClick={() => {
-                      nav("/Detail/" + params.id);
-                    }}
-                  >
-                    <BsEye size={20} />
-                  </button>
-                  {params.row.responKurikulum == "pending" ? (
+              <>
+                <button
+                  className="mr-4"
+                  onClick={() => {
+                    nav("/Detail/" + params.id);
+                  }}
+                >
+                  <BsEye size={20} />
+                </button>
+
+                {user?.role === 2 &&
+                  params.row.statusPengajuan === "pending" && (
                     <button
                       className=""
                       onClick={() => {
@@ -190,9 +170,8 @@ export default function TabelIzinGuru({ data, children }) {
                     >
                       <BiEditAlt color="blue" size={20} />
                     </button>
-                  ) : null}
-                </>
-              )}
+                  )}
+              </>
             </div>
           );
         },
@@ -236,8 +215,8 @@ export default function TabelIzinGuru({ data, children }) {
         flex: 0.7,
       },
       {
-        field: "kurikulum",
-        headerName: "Respon Kurikulum",
+        field: "statusPengajuan",
+        headerName: "Status Pengajuan",
         headerClassName: "bg-slate-200 text-center font-abc",
         minWidth: 100,
         flex: 0.7,
@@ -246,16 +225,16 @@ export default function TabelIzinGuru({ data, children }) {
           return (
             <div
               className={`${
-                params.row.responKurikulum === "pending"
+                params.row.statusPengajuan === "pending"
                   ? "bg-yellow-400 text-white"
-                  : params.row.responKurikulum === "Diizinkan"
+                  : params.row.statusPengajuan === "Diizinkan"
                   ? "bg-green-500"
-                  : params.row.responKurikulum === "Ditolak"
+                  : params.row.statusPengajuan === "Ditolak"
                   ? "bg-red-600"
                   : "bg-gray-700"
               } h-full text-center pt-3 text-white font-abc w-full `}
             >
-              {params.row.responKurikulum}
+              {params.row.statusPengajuan}
             </div>
           );
         },
@@ -383,16 +362,20 @@ export default function TabelIzinGuru({ data, children }) {
         izin.foto = res.data.secure_url;
       }
 
+      if (izin?.typeIzin === "Keluar") {
+        if (izin?.jamMasuk < izin?.jamKeluar) {
+          swalLoading.close();
+          setErrorIzin({
+            jamMasuk: `Jam masuk tidak boleh kurang dari jam ${izin.jamKeluar}`,
+          });
+          return;
+        }
+      }
       const response = await axios.post(
         `${BACKEND_BASE_URL}/api/requestIzinGuru/`,
         izin
       );
 
-      // Menutup Swal.fire loading
-
-      console.log("res : ", response);
-
-      // Menampilkan Swal.fire berhasil
       Swal.fire({
         icon: "success",
         title: "Izin berhasil diajukan!",
@@ -400,14 +383,11 @@ export default function TabelIzinGuru({ data, children }) {
         timer: 1500,
       });
 
-      // Navigasi atau tindakan selanjutnya
       window.location.reload();
     } catch (err) {
       console.log(err);
-      // Menutup Swal.fire loading pada error
       swalLoading.close();
       setErrorIzin(err.response.data.error);
-      // Menampilkan Swal.fire error
 
       Swal.fire({
         icon: "error",
@@ -538,6 +518,7 @@ export default function TabelIzinGuru({ data, children }) {
               typeIzin: a.typeIzin,
               tanggal: new Date(a.created_at).toLocaleDateString(),
               responKurikulum: a.responKurikulum,
+              statusPengajuan: a.statusPengajuan,
             });
           } else if (pushMapel[0] == undefined && a.kelas == null) {
             const pushKurikulum = AllUser.filter(
@@ -555,6 +536,7 @@ export default function TabelIzinGuru({ data, children }) {
                 typeIzin: a.typeIzin,
                 tanggal: new Date(a.created_at).toLocaleDateString(),
                 responKurikulum: a.responKurikulum,
+                statusPengajuan: a.statusPengajuan,
               });
             }
           }
@@ -625,7 +607,7 @@ export default function TabelIzinGuru({ data, children }) {
               {img && izin.typeIzin == "Masuk" ? (
                 <div className="w-full ">
                   <img
-                    className="w-[50%] h-[50%] rounded-md mx-auto object-contain"
+                    className="w-[60%] h-[60%] rounded-lg mx-auto object-contain"
                     src={URL.createObjectURL(img)}
                     alt=""
                   />
@@ -672,7 +654,7 @@ export default function TabelIzinGuru({ data, children }) {
                     ) : null}
                   </div>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masukk</h1>
+                    <h1 className="font-abc pb-2">Jam Masuk</h1>
                     <input
                       type="time"
                       value={izin.jamMasuk}
@@ -852,7 +834,7 @@ export default function TabelIzinGuru({ data, children }) {
                 img == null && izinEdit.foto != null ? (
                   <div className="w-full ">
                     <img
-                      className="w-[50%] mx-auto object-contain"
+                      className="w-[60%] rounded-lg mx-auto object-contain"
                       src={izinEdit.foto}
                       alt=""
                     />
@@ -860,7 +842,7 @@ export default function TabelIzinGuru({ data, children }) {
                 ) : img != null ? (
                   <div className="w-full ">
                     <img
-                      className="w-[50%] mx-auto object-contain"
+                      className="w-[60%] rounded-lg mx-auto object-contain"
                       src={URL.createObjectURL(img)}
                       alt=""
                     />
@@ -1044,7 +1026,7 @@ export default function TabelIzinGuru({ data, children }) {
             <div className="bg-white w-[96%] mt-3 mb-[200px]  mx-auto  rounded-lg">
               <div className="lg:flex xl:flex block justify-between">
                 <div className="">
-                  {user.role == 2 ? (
+                  {user?.role == 2 ? (
                     <button
                       onClick={() => setPengadaanBarang(!pengadaanBarang)}
                       className="bg-[#155f95] mt-1 mb-3 px-3 text-center py-1 xl:w-[200px] lg:w-[200px] w-full md:w-[200px] rounded-md text-[#E5D5F2] font-abc"
@@ -1104,7 +1086,7 @@ export default function TabelIzinGuru({ data, children }) {
                           <option value="pending">Pending</option>
                           <option value="Diizinkan">Diizinkan</option>
                           <option value="Ditolak">Ditolak</option>
-                          <option value="Dibatalkan">Dibatalkan</option>
+                          <option value="Batalkan">Batalkan</option>
                         </select>
                       </div>
                     </div>

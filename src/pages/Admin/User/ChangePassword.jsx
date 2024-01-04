@@ -63,7 +63,7 @@ export default function ChangePassword() {
         <Sidebar setSidebar={5} width={open} setWidth={setOpen} />
       </div>
       <div className={`w-11/12 mx-auto`}>
-        <TopBar>{"Edit Petugas Owner"}</TopBar>
+        <TopBar>{"Edit Petugas"}</TopBar>
         <div className="w-[94%] mx-auto">
           <div className="w-full mt-6 relative">
             <h1 className="font-abc font-[500]">Password</h1>

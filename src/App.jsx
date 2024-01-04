@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
@@ -21,6 +21,7 @@ import ChangePassword from "./pages/Admin/User/ChangePassword";
 import LandingPage from "./pages/LandingPage";
 import PermintaanIzinSiswa from "./pages/Kurikulum/PermintaanIzinSiswa";
 import NotfoundPage from "./pages/NotfoundPage";
+import NfPage from "./pages/NfPage";
 
 function App() {
   const { isLogin, user } = useSelector((state) => state.user);
@@ -35,12 +36,15 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="*" element={<NotfoundPage />} />
+            <Route path="*" element={<NfPage />} />
           </Routes>
-        ) : user.role === 2 ? (
+        ) : user?.role === 2 ? (
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/home" element={<HomePage />} />
+            <Route
+              path="/home"
+              element={user === undefined ? <NfPage /> : <HomePage />}
+            />
             <Route path="*" element={<NotfoundPage />} />
             <Route
               path="/PermintaanIzin"
@@ -50,7 +54,7 @@ function App() {
             <Route path="/Detail/:id" element={<DetailIzin />} />
             <Route path="/Profile" element={<EditProfilePage />} />
           </Routes>
-        ) : user.role === 4 ? (
+        ) : user?.role === 4 ? (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<HomePage />} />
@@ -63,7 +67,7 @@ function App() {
             <Route path="/Profile" element={<EditProfilePage />} />
             <Route path="*" element={<NotfoundPage />} />
           </Routes>
-        ) : user.role == 5 ? (
+        ) : user?.role == 5 ? (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<HomePage />} />

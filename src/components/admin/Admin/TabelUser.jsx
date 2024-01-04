@@ -113,7 +113,7 @@ export default function TabelUser({ data, children }) {
       const res = await axios.post(`${BACKEND_BASE_URL}/api/Register`, data);
 
       if (res.status === 200) {
-        nav("/owner/petugas");
+        nav("/home");
       }
     } catch (err) {
       console.log(err);
@@ -273,7 +273,7 @@ export default function TabelUser({ data, children }) {
                 Simpan
               </button>
               <button
-                onClick={() => nav("/owner/petugas")}
+                onClick={() => nav("/home")}
                 className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
               >
                 Batal
@@ -287,7 +287,7 @@ export default function TabelUser({ data, children }) {
             <div className="bg-white w-[96%] mt-3 mb-[200px]  mx-auto  rounded-lg">
               <div className="lg:flex xl:flex block ">
                 <div className="">
-                  {user.role == 1 ? (
+                  {user?.role == 1 ? (
                     <button
                       onClick={() => setPengadaanBarang(!pengadaanBarang)}
                       className="bg-[#155f95] mt-1 mb-3 px-3 text-center py-1 xl:w-[200px] lg:w-[200px] w-full md:w-[200px] rounded-md text-[#E5D5F2] font-abc"
