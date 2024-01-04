@@ -12,6 +12,7 @@ export default function AddUser() {
   const [open, setOpen] = useState(false);
   const [disableBtn, setDisableBtn] = useState(false);
   const [hiddenPass, setHiddenPass] = useState(false);
+  const [img, setImg] = useState(null);
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -19,6 +20,7 @@ export default function AddUser() {
     role: "",
     noHP: "",
     kelas: "",
+    fotoprofile: "",
   });
 
   const [err, setErr] = useState({
@@ -28,32 +30,54 @@ export default function AddUser() {
     role: "",
     noHP: "",
     kelas: "",
+    fotoprofile: "",
   });
-  const tambahPetugas = async () => {
+  const tambahPetugas = async (e) => {
+    e.preventDefault();
+    const swalLoading = Swal.fire({
+      title: "Memproses...",
+      html: "Mohon tunggu...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     try {
-      const res = await axios.post(`${BACKEND_BASE_URL}/api/Register`, data);
+      if (img != null) {
+        const foto = new FormData();
+        foto.append("file", img);
+        foto.append("upload_preset", "digikostDemoApp");
+        foto.append("cloud_name", "dkt6ysk5c");
 
-      if (res.status === 200) {
-        Swal.fire({
-          title: "Berhasil menambahkan izin",
-          showConfirmButton: false,
-          timer: 1000,
-          icon: "success",
-          didClose: () => {
-            nav("/AllUsers");
-          },
-        });
+        const res = await axios.post(
+          "https://api.cloudinary.com/v1_1/dkt6ysk5c/image/upload",
+          foto,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log("link :", res.data?.secure_url);
+        data.fotoprofile = res?.data?.secure_url;
       }
+
+      const res2 = await axios.post(`${BACKEND_BASE_URL}/api/Register`, data);
+
+      Swal.fire({
+        title: "Berhasil menambahkan user",
+        showConfirmButton: false,
+        timer: 1000,
+        icon: "success",
+        didClose: () => {
+          nav("/AllUsers");
+        },
+      });
     } catch (err) {
       console.log(err);
-      setErr({
-        name: err?.response?.data?.error?.name,
-        email: err?.response?.data?.error?.email,
-        password: err?.response?.data?.error?.password,
-        role: err?.response?.data?.error?.role,
-        noHP: err?.response?.data?.error?.noHP,
-        kelas: err?.response?.data?.error?.kelas,
-      });
+      swalLoading.close();
+      // setErr(err?.response?.data?.error);
     }
   };
 
@@ -62,8 +86,6 @@ export default function AddUser() {
       ...data,
       [e.target.name]: e.target.value,
     });
-
-    console.log(data);
   };
   return (
     <div className="w-full px-3 min-h-screen mb-[100px]">
@@ -137,6 +159,34 @@ export default function AddUser() {
                 ) : null}
               </div>
               <div className="w-full mt-4">
+                <label
+                  htmlFor="fotoprofile"
+                  className="border-2 border-slate-500 px-2 py-1 text-sm font-abc rounded-md"
+                >
+                  Pilih Foto
+                </label>
+              </div>
+              <div className="w-full mt-4 hidden">
+                <h1 className="font-abc pb-2">Poto Profile</h1>
+                <input
+                  type="file"
+                  id="fotoprofile"
+                  name="fotoprofile"
+                  onChange={(e) => setImg(e.target.files[0])}
+                  className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
+                />
+              </div>
+              {img ? (
+                <div className="w-[50%] mt-3 ">
+                  <img
+                    className="w-[300px] h-[300px] border-2  rounded-full mx-auto object-contain"
+                    src={URL.createObjectURL(img)}
+                    alt=""
+                  />
+                </div>
+              ) : null}
+
+              <div className="w-full mt-4">
                 <h1 className="font-abc pb-2 ">Role</h1>
                 <select
                   name="role"
@@ -170,7 +220,7 @@ export default function AddUser() {
               ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
-                  onClick={tambahPetugas}
+                  onClick={(e) => tambahPetugas(e)}
                   className="bg-[#155f95] px-3 py-1 w-[140px] rounded-md text-[#E5D5F2] font-abc"
                 >
                   Simpan

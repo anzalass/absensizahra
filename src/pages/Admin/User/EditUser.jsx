@@ -56,7 +56,7 @@ export default function EditUser() {
   const UpdateUser = async () => {
     try {
       const res = await axios.put(
-        `${BACKEND_BASE_URL}/api/updateDataUser/${userSelected.id}`,
+        `${BACKEND_BASE_URL}/api/updateDataUser/${userSelected?.id}`,
         userSelected
       );
       if (res.status === 200) {
@@ -81,7 +81,7 @@ export default function EditUser() {
   };
 
   return (
-    <div className="w-full h-[160vh] flex">
+    <div className="w-full h-screen flex">
       <div className={``}>
         {/* <button onClick={(e) => setOpen(1)}>buka</button> */}
         {/* {open === 1 ? <Sidebar setSidebar={1} open={setOpen} /> : null} */}
@@ -96,7 +96,7 @@ export default function EditUser() {
               type="text"
               name="name"
               onChange={(e) => changeDataHandler(e)}
-              value={userSelected.name}
+              value={userSelected?.name}
               className="w-full h-[35px] border-2 pl-2 border-slate-500 rounded-md"
             />
             {err.name ? <p>{err.name}</p> : null}
@@ -107,7 +107,7 @@ export default function EditUser() {
               type="text"
               name="email"
               onChange={(e) => changeDataHandler(e)}
-              value={userSelected.email}
+              value={userSelected?.email}
               className="w-full h-[35px] border-2 pl-2 border-slate-500 rounded-md"
             />
             {err.email ? <p>{err.email}</p> : null}
@@ -179,7 +179,7 @@ export default function EditUser() {
               Simpan
             </button>
             <button
-              onClick={() => nav("/owner/petugas")}
+              onClick={() => nav("/AllUsers")}
               className="bg-[#E5D5F2] px-3 py-1 w-[140px] rounded-md ml-2  text-[#155f95] font-abc"
             >
               Batal
