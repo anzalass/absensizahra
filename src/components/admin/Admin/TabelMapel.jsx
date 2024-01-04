@@ -93,7 +93,7 @@ export default function TabelMapel({ data, children }) {
     }
   };
 
-  const editBarangFunc = async (id) => {
+  const EditIzinFunc = async (id) => {
     try {
       setIdIzin(id);
       setEditBarang(!editBarang);
@@ -181,7 +181,7 @@ export default function TabelMapel({ data, children }) {
             <button
               className=""
               onClick={() => {
-                editBarangFunc(params.id);
+                EditIzinFunc(params.id);
               }}
             >
               <BiEditAlt color="blue" size={20} />

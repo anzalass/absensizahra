@@ -4,7 +4,7 @@ import axios, { all } from "axios";
 import { useEffect, useState } from "react";
 import { BASE_URL, BACKEND_BASE_URL } from "../../config/base_url.jsx";
 import TabelIzinGuru from "../../components/admin/pengadaanbarang/TabelIzinGuru.jsx";
-import TableTambahBarang from "../../components/admin/pengadaanbarang/TabelBarang.jsx";
+import TableIzin from "../../components/admin/pengadaanbarang/TabelIzin.jsx";
 import { useSelector } from "react-redux";
 
 export default function PermintaanIzinSiswa() {
@@ -42,7 +42,7 @@ export default function PermintaanIzinSiswa() {
 
         <div className="w-[95%] opacity-25 mx-auto mt-0 h-[1px] bg-slate-600"></div>
 
-        {!addIzin ? <TableTambahBarang data={Izin} /> : null}
+        {!addIzin ? <TableIzin data={Izin} /> : null}
       </div>
     </div>
   );

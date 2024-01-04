@@ -15,7 +15,7 @@ import { edit } from "@cloudinary/url-gen/actions/animated";
 import { Checkbox } from "@mui/material";
 import Swal from "sweetalert2";
 
-export default function TabelBarang({ data, children }) {
+export default function TabelIzin({ data, children }) {
   const nav = useNavigate();
   const { user } = useSelector((state) => state.user);
   const [editBarang, setEditBarang] = useState(false);
@@ -177,51 +177,30 @@ export default function TabelBarang({ data, children }) {
       renderCell: (params) => {
         return (
           <div className="flex">
-            {params.row.status == "pending" ? (
-              params.row.idAdmin == user?.id ? (
-                <>
-                  <button
-                    className="mr-4"
-                    onClick={() => DeletePengadaan(params.id)}
-                  >
-                    <BsTrash3 color="red" size={20} />
-                  </button>
-                  <button
-                    className=""
-                    onClick={() => {
-                      editBarangFunc(params.id);
-                    }}
-                  >
-                    <BiEditAlt color="blue" size={20} />
-                  </button>
-                </>
-              ) : (
-                <></>
-              )
-            ) : (
-              <>
-                <button
-                  className="mr-4"
-                  onClick={() => {
-                    nav("/Detail/" + params.id);
-                  }}
-                >
-                  <BsEye size={20} />
-                </button>
-                {user?.role == 1 &&
-                params.row.responGuruPengajar == "pending" ? (
+            <>
+              <button
+                className="mr-4"
+                onClick={() => {
+                  nav("/Detail/" + params.id);
+                }}
+              >
+                <BsEye size={20} />
+              </button>
+
+              {user?.role === 1 &&
+                params.row.statusPengajuan === "pending" &&
+                params.row.responGuruPengajar === "pending" && (
                   <button
                     className=""
                     onClick={() => {
-                      editBarangFunc(params.id);
+                      EditIzinFunc(params.id);
                       resetError();
                     }}
                   >
                     <BiEditAlt color="blue" size={20} />
                   </button>
-                ) : null}
-              </>
-            )}
+                )}
+            </>
           </div>
         );
       },
@@ -277,6 +256,17 @@ export default function TabelBarang({ data, children }) {
 
   const ajukanIzin = async (e) => {
     e.preventDefault();
+
+    const swalLoading = Swal.fire({
+      title: "Memproses...",
+      html: "Mohon tunggu...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     try {
       if (img != null) {
         const data = new FormData();
@@ -301,6 +291,7 @@ export default function TabelBarang({ data, children }) {
         `${BACKEND_BASE_URL}/api/requestIzin`,
         izin
       );
+
       if (response.status === 200) {
         console.log("hasil : ", response);
         Swal.fire({
@@ -314,13 +305,12 @@ export default function TabelBarang({ data, children }) {
         });
       }
     } catch (err) {
-      console.log("err : ",err);
-      console.error(err.response.data.error);
       setErrorIzin(err.response.data.error);
+      swalLoading.close();
     }
   };
 
-  const editBarangFunc = async (id) => {
+  const EditIzinFunc = async (id) => {
     try {
       setIdIzin(id);
       setEditBarang(!editBarang);
@@ -336,7 +326,17 @@ export default function TabelBarang({ data, children }) {
     }
   };
 
-  const EditIzin = async () => {
+  const EditIzin = async (e) => {
+    e.preventDefault();
+    const swalLoading = Swal.fire({
+      title: "Memproses...",
+      html: "Mohon tunggu...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     try {
       if (img != null) {
         const data = new FormData();
@@ -388,6 +388,7 @@ export default function TabelBarang({ data, children }) {
         }
       }
     } catch (err) {
+      swalLoading.close();
       setErrorIzin(err.response.data.error);
     }
   };
@@ -404,8 +405,7 @@ export default function TabelBarang({ data, children }) {
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
             new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
-            (status === "" ||
-            item.statusPengajuan === status)
+          (status === "" || item.statusPengajuan === status)
       )
       .forEach((a, index) => {
         console.log("a : ", a);
@@ -432,8 +432,8 @@ export default function TabelBarang({ data, children }) {
             keterangan: a.keterangan,
             typeIzin: a.typeIzin,
             tanggal: new Date(a.created_at).toLocaleDateString(),
-            responGuruPengajar : a.responGuruPengajar,
-            statusPengajuan: a.statusPengajuan
+            responGuruPengajar: a.responGuruPengajar,
+            statusPengajuan: a.statusPengajuan,
           });
         }
       });
@@ -487,7 +487,7 @@ export default function TabelBarang({ data, children }) {
               {img && izin.typeIzin == "Masuk" ? (
                 <div className="w-full h-[300px] ">
                   <img
-                    className="w-[40%] h-full mx-auto object-contain"
+                    className="w-[40%] rounded-md h-full mx-auto object-contain"
                     src={URL.createObjectURL(img)}
                     alt=""
                   />
@@ -502,7 +502,11 @@ export default function TabelBarang({ data, children }) {
                   onChange={(e) => changeIzinHandler(e)}
                   className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                 />
-                {errIzin?.guruPengajar ? <p>{errIzin?.guruPengajar}</p> : null}
+                {errIzin?.guruPengajar ? (
+                  <p className="text-red-500 text-sm">
+                    *{errIzin?.guruPengajar}
+                  </p>
+                ) : null}
               </div>
 
               <div className="w-full mt-4">
@@ -523,7 +527,11 @@ export default function TabelBarang({ data, children }) {
                     );
                   })}
                 </select>
-                {errIzin?.guruPengajar ? <p>{errIzin?.guruPengajar}</p> : null}
+                {errIzin?.guruPengajar ? (
+                  <p className="text-red-500 text-sm">
+                    *{errIzin?.guruPengajar}
+                  </p>
+                ) : null}
               </div>
               <div className="w-full mt-4">
                 <h1 className="font-abc pb-2 ">Kurikulum</h1>
@@ -543,7 +551,9 @@ export default function TabelBarang({ data, children }) {
                     );
                   })}
                 </select>
-                {errIzin?.kurikulum ? <p>{errIzin?.kurikulum}</p> : null}
+                {errIzin?.kurikulum ? (
+                  <p className="text-red-500 text-sm">*{errIzin?.kurikulum}</p>
+                ) : null}
               </div>
 
               {izin.typeIzin == "Keluar" ? (
@@ -557,7 +567,11 @@ export default function TabelBarang({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamKeluar ? <p>{errIzin?.jamKeluar}</p> : null}
+                    {errIzin?.jamKeluar ? (
+                      <p className="text-red-500 text-sm">
+                        *{errIzin?.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="w-full mt-4">
                     <h1 className="font-abc pb-2">Jam Masuk</h1>
@@ -569,7 +583,11 @@ export default function TabelBarang({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamMasuk ? <p>{errIzin?.jamMasuk}</p> : null}
+                    {errIzin?.jamMasuk ? (
+                      <p className="text-red-500 text-sm">
+                        *{errIzin?.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : izin.typeIzin == "Pulang" ? (
@@ -582,7 +600,11 @@ export default function TabelBarang({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamKeluar ? <p>{errIzin?.jamKeluar}</p> : null}
+                    {errIzin?.jamKeluar ? (
+                      <p className="text-red-500 text-sm">
+                        *{errIzin?.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : (
@@ -596,7 +618,11 @@ export default function TabelBarang({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamMasuk ? <p>{errIzin?.jamMasuk}</p> : null}
+                    {errIzin?.jamMasuk ? (
+                      <p className="text-red-500 text-sm">
+                        *{errIzin?.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="flex items-center mt-4 mb-4">
                     <input
@@ -643,7 +669,9 @@ export default function TabelBarang({ data, children }) {
                   placeholder="Keterangan"
                 ></textarea>
               </div>
-              {errIzin?.keterangan ? <p>{errIzin?.keterangan}</p> : null}
+              {errIzin?.keterangan ? (
+                <p className="text-red-500 text-sm">*{errIzin?.keterangan}</p>
+              ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
                   onClick={(e) => ajukanIzin(e)}
@@ -751,7 +779,9 @@ export default function TabelBarang({ data, children }) {
                   onChange={(e) => changeIzinEditHandler(e)}
                   className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                 />
-                {errIzin?.idMapel ? <p>{errIzin?.idMapel}</p> : null}
+                {errIzin?.idMapel ? (
+                  <p className="text-red-500 text-sm">*{errIzin?.idMapel}</p>
+                ) : null}
               </div>
               <div className="w-full mt-4">
                 <h1 className="font-abc pb-2 ">Guru Pengajar</h1>
@@ -777,7 +807,11 @@ export default function TabelBarang({ data, children }) {
                     }
                   })}
                 </select>
-                {errIzin?.guruPengajar ? <p>{errIzin?.guruPengajar}</p> : null}
+                {errIzin?.guruPengajar ? (
+                  <p className="text-red-500 text-sm">
+                    *{errIzin?.guruPengajar}
+                  </p>
+                ) : null}
               </div>
               <div className="w-full mt-4">
                 <h1 className="font-abc pb-2 ">Kurikulum</h1>
@@ -805,7 +839,9 @@ export default function TabelBarang({ data, children }) {
                     }
                   })}
                 </select>
-                {errIzin?.kurikulum ? <p>{errIzin?.kurikulum}</p> : null}
+                {errIzin?.kurikulum ? (
+                  <p className="text-red-500 text-sm">*{errIzin?.kurikulum}</p>
+                ) : null}
               </div>
               {izinEdit.typeIzin == "Keluar" ? (
                 <>
@@ -820,7 +856,11 @@ export default function TabelBarang({ data, children }) {
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamKeluar ? <p>{errIzin?.jamKeluar}</p> : null}
+                    {errIzin?.jamKeluar ? (
+                      <p className="text-red-500 text-sm">
+                        *{errIzin?.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="w-full mt-4">
                     <h1 className="font-abc pb-2">Jam Masuk</h1>
@@ -833,7 +873,11 @@ export default function TabelBarang({ data, children }) {
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamMasuk ? <p>{errIzin?.jamMasuk}</p> : null}
+                    {errIzin?.jamMasuk ? (
+                      <p className="text-red-500 text-sm">
+                        *{errIzin?.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : izinEdit.typeIzin == "Pulang" ? (
@@ -849,7 +893,11 @@ export default function TabelBarang({ data, children }) {
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamKeluar ? <p>{errIzin?.jamKeluar}</p> : null}
+                    {errIzin?.jamKeluar ? (
+                      <p className="text-red-500 text-sm">
+                        *{errIzin?.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : (
@@ -863,7 +911,11 @@ export default function TabelBarang({ data, children }) {
                       onChange={(e) => changeIzinEditHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamMasuk ? <p>{errIzin?.jamMasuk}</p> : null}
+                    {errIzin?.jamMasuk ? (
+                      <p className="text-red-500 text-sm">
+                        *{errIzin?.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
 
                   <div className="flex items-center mt-4 mb-4">
@@ -912,10 +964,12 @@ export default function TabelBarang({ data, children }) {
                   required
                 ></textarea>
               </div>
-              {errIzin?.keterangan ? <p>{errIzin?.keterangan}</p> : null}
+              {errIzin?.keterangan ? (
+                <p className="text-red-500 text-sm">*{errIzin?.keterangan}</p>
+              ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
-                  onClick={(e) => EditIzin()}
+                  onClick={(e) => EditIzin(e)}
                   className="bg-[#155f95] px-3 py-1 w-[140px] rounded-md text-[#E5D5F2] font-abc"
                 >
                   Simpan
