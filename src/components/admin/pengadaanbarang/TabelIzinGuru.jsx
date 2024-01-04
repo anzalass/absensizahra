@@ -317,7 +317,6 @@ export default function TabelIzinGuru({ data, children }) {
     );
     const getAllUser = await axios.get(`${BACKEND_BASE_URL}/api/getUser`);
 
-   
     setAllUser(getAllUser.data.results);
     setKurikulum(getKurikulum.data.results);
   };
@@ -351,15 +350,63 @@ export default function TabelIzinGuru({ data, children }) {
     console.log(izinEdit);
   };
 
+  // const ajukanIzin = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     if (img != null) {
+  //       const data = new FormData();
+  //       data.append("file", img);
+  //       data.append("upload_preset", "digikostDemoApp");
+  //       data.append("cloud_name", "dkt6ysk5c");
+
+  //       const res = await axios.post(
+  //         "https://api.cloudinary.com/v1_1/dkt6ysk5c/image/upload",
+  //         data,
+  //         {
+  //           headers: {
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         }
+  //       );
+
+  //       izin.foto = res.data.secure_url;
+  //     }
+
+  //     const response = await axios.post(
+  //       `${BACKEND_BASE_URL}/api/requestIzinGuru/`,
+  //       izin
+  //     );
+
+  //     if (response.status === 200) {
+  //       console.log("res : ", response);
+  //       window.location.reload();
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     setErrorIzin(err.response.data.error);
+  //   }
+  // };
+
   const ajukanIzin = async (e) => {
     e.preventDefault();
+
+    // Menampilkan Swal.fire loading
+    const swalLoading = Swal.fire({
+      title: "Memproses...",
+      html: "Mohon tunggu...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     try {
       if (img != null) {
         const data = new FormData();
         data.append("file", img);
         data.append("upload_preset", "digikostDemoApp");
         data.append("cloud_name", "dkt6ysk5c");
-
         const res = await axios.post(
           "https://api.cloudinary.com/v1_1/dkt6ysk5c/image/upload",
           data,
@@ -378,14 +425,32 @@ export default function TabelIzinGuru({ data, children }) {
         izin
       );
 
-      if (response.status === 200) {
-        console.log("res : ", response);
-        window.location.reload();
-        // window.location.href = `${BASE_URL}owner/pengadaan-barang`;
-      }
+      // Menutup Swal.fire loading
+      swalLoading.close();
+
+      console.log("res : ", response);
+
+      // Menampilkan Swal.fire berhasil
+      Swal.fire({
+        icon: "success",
+        title: "Izin berhasil diajukan!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      // Navigasi atau tindakan selanjutnya
+      window.location.reload();
     } catch (err) {
-      console.error(err);
+      console.log(err);
+      // Menutup Swal.fire loading pada error
+      swalLoading.close();
       setErrorIzin(err.response.data.error);
+      // Menampilkan Swal.fire error
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Terjadi kesalahan.",
+      });
     }
   };
 
@@ -465,9 +530,8 @@ export default function TabelIzinGuru({ data, children }) {
           (filterBulan === "" ||
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
-            new Date(item.created_at).getFullYear() === Number(filterTahun)) && 
-            (status === "" ||
-            item.statusPengajuan === status) &&
+            new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
+          (status === "" || item.statusPengajuan === status) &&
           (user?.role == 5
             ? item.kurikulum === user?.id
             : item.idUser === user?.id)
@@ -545,7 +609,7 @@ export default function TabelIzinGuru({ data, children }) {
     <>
       <div className="bg-white w-[96%] mt-3  mb-[200px]  mx-auto p-3 rounded-lg">
         {pengadaanBarang ? (
-          <div className="w-[95%] mx-auto h-[130vh] bg-white rounded-xl">
+          <div className="w-[95%] mx-auto min-h-screen bg-white rounded-xl">
             <div action="" className="w-[95%] mx-auto mt-2 p-3">
               <button
                 type="button"
@@ -587,7 +651,7 @@ export default function TabelIzinGuru({ data, children }) {
               {img && izin.typeIzin == "Masuk" ? (
                 <div className="w-full ">
                   <img
-                    className="w-[50%] mx-auto object-contain"
+                    className="w-[50%] h-[50%] rounded-md mx-auto object-contain"
                     src={URL.createObjectURL(img)}
                     alt=""
                   />
@@ -611,9 +675,9 @@ export default function TabelIzinGuru({ data, children }) {
                     );
                   })}
                 </select>
-                {errIzin.kurikulum ? <p>{errIzin.kurikulum}</p> : null}
+                {errIzin?.kurikulum ? <p>{errIzin?.kurikulum}</p> : null}
               </div>
-         
+
               {izin.typeIzin == "Keluar" ? (
                 <>
                   <div className="w-full mt-4">
@@ -628,7 +692,7 @@ export default function TabelIzinGuru({ data, children }) {
                     {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
                   </div>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukk</h1>
                     <input
                       type="time"
                       value={izin.jamMasuk}
@@ -655,7 +719,7 @@ export default function TabelIzinGuru({ data, children }) {
               ) : (
                 <>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukkkkkk</h1>
                     <input
                       type="time"
                       value={izin.jamMasuk}
@@ -682,7 +746,7 @@ export default function TabelIzinGuru({ data, children }) {
                   </div>
                 </>
               )}
-                   {isBukti && izin.typeIzin == "Masuk" ? (
+              {isBukti && izin.typeIzin == "Masuk" ? (
                 <div className="w-full mt-4">
                   <label
                     htmlFor="buktiNota"
@@ -852,7 +916,7 @@ export default function TabelIzinGuru({ data, children }) {
                     {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
                   </div>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukkk</h1>
                     <input
                       type="time"
                       value={izinEdit.jamMasuk}
@@ -884,7 +948,7 @@ export default function TabelIzinGuru({ data, children }) {
               ) : (
                 <>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukkkkk</h1>
                     <input
                       type="time"
                       value={izinEdit.jamMasuk}

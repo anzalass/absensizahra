@@ -314,7 +314,7 @@ export default function TabelBarang({ data, children }) {
         });
       }
     } catch (err) {
-      console.log("err : ",err);
+      console.log("err : ", err);
       console.error(err.response.data.error);
       setErrorIzin(err.response.data.error);
     }
@@ -404,8 +404,7 @@ export default function TabelBarang({ data, children }) {
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
             new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
-            (status === "" ||
-            item.statusPengajuan === status)
+          (status === "" || item.statusPengajuan === status)
       )
       .forEach((a, index) => {
         console.log("a : ", a);
@@ -432,8 +431,8 @@ export default function TabelBarang({ data, children }) {
             keterangan: a.keterangan,
             typeIzin: a.typeIzin,
             tanggal: new Date(a.created_at).toLocaleDateString(),
-            responGuruPengajar : a.responGuruPengajar,
-            statusPengajuan: a.statusPengajuan
+            responGuruPengajar: a.responGuruPengajar,
+            statusPengajuan: a.statusPengajuan,
           });
         }
       });
@@ -487,7 +486,7 @@ export default function TabelBarang({ data, children }) {
               {img && izin.typeIzin == "Masuk" ? (
                 <div className="w-full h-[300px] ">
                   <img
-                    className="w-[40%] h-full mx-auto object-contain"
+                    className="w-[40%] rounded-md h-full mx-auto object-contain"
                     src={URL.createObjectURL(img)}
                     alt=""
                   />
