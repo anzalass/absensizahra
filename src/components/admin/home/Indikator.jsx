@@ -55,7 +55,7 @@ export default function Indikator() {
               </div>
             </Link>
             <Link to={"/Izin"}>
-              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#FDB022]">
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-slate-500">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {siswa?.keluar}
                 </h1>
@@ -76,7 +76,7 @@ export default function Indikator() {
               </div>
             </Link>
             <Link to={"/Izin"}>
-              <div className=" pl-3 pt-6 h-[100px] relative rounded-md w-[100%] bg-[#F04438]">
+              <div className=" pl-3 pt-6 h-[100px] relative rounded-md w-[100%] bg-[#32D583] ">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {siswa?.diizinkan}
                 </h1>
@@ -86,7 +86,7 @@ export default function Indikator() {
               </div>
             </Link>
             <Link to={"/Izin"}>
-              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#32D583]">
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#F04438]">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {siswa?.pulang}
                 </h1>
@@ -96,7 +96,7 @@ export default function Indikator() {
               </div>
             </Link>
             <Link to={"/Izin"}>
-              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#32D583]">
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#FDB022]">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {siswa?.pending}
                 </h1>
@@ -131,7 +131,7 @@ export default function Indikator() {
               </div>
             </Link>
             <Link to={"/AllUsers"}>
-              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#FDB022]">
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-red-500">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {admin?.admin}
                 </h1>
@@ -139,7 +139,7 @@ export default function Indikator() {
               </div>
             </Link>
             <Link to={"/AllUsers"}>
-              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#FDB022]">
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-green-500">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {admin?.admin}
                 </h1>
@@ -188,7 +188,7 @@ export default function Indikator() {
               </div>
             </Link>
             <Link to={"/PermintaanIzinGuru"}>
-              <div className=" pl-3 pt-6 h-[100px] relative rounded-md w-[100%] bg-[#F04438]">
+              <div className=" pl-3 pt-6 h-[100px] relative rounded-md w-[100%] bg-[#32D583] ">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {guru?.diizinkan}
                 </h1>
@@ -198,7 +198,7 @@ export default function Indikator() {
               </div>
             </Link>
             <Link to={"/PermintaanIzinGuru"}>
-              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#32D583]">
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#F04438]">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {guru?.ditolak}
                 </h1>
@@ -279,22 +279,26 @@ export default function Indikator() {
                 Daftar Kurikulum
               </h1>
             </div>
-            <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-purple-500">
-              <h1 className=" text-white font-[500] text-[20px]">
-                {kurikulum?.guruWaiting}
-              </h1>
-              <h1 className=" text-white font-[500] text-[16px]">
-                Permintaan Izin Dari Guru
-              </h1>
-            </div>
-            <div className=" pl-3 pt-6 h-[100px] relative rounded-md w-[100%] bg-[#000]">
-              <h1 className=" text-white font-[500] text-[20px]">
-                {kurikulum?.siswaWaiting}
-              </h1>
-              <h1 className=" text-white font-[500] text-[16px]">
-                Permintaan Izin Dari Siswa
-              </h1>
-            </div>
+            <Link to={"/PermintaanIzinSiswa"}>
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-purple-500">
+                <h1 className=" text-white font-[500] text-[20px]">
+                  {kurikulum?.guruWaiting}
+                </h1>
+                <h1 className=" text-white font-[500] text-[16px]">
+                  Permintaan Izin Dari Guru
+                </h1>
+              </div>
+            </Link>
+            <Link to={"/PermintaanIzin"}>
+              <div className=" pl-3 pt-6 h-[100px] relative rounded-md w-[100%] bg-[#000]">
+                <h1 className=" text-white font-[500] text-[20px]">
+                  {kurikulum?.siswaWaiting}
+                </h1>
+                <h1 className=" text-white font-[500] text-[16px]">
+                  Permintaan Izin Dari Siswa
+                </h1>
+              </div>
+            </Link>
           </div>
 
           <div className=" lg:w-[50%] xl:w-[50%] md:w-[50%] w-full  xl:px-10 lg:px-10 md:px-10 px-3 xl:-mt-3 lg:-mt-3 md:-mt-3 mt-10">

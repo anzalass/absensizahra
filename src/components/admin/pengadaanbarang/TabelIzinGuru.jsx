@@ -161,7 +161,7 @@ export default function TabelIzinGuru({ data, children }) {
                     <button
                       className=""
                       onClick={() => {
-                        editBarangFunc(params.id);
+                        EditIzinFunc(params.id);
                       }}
                     >
                       <BiEditAlt color="blue" size={20} />
@@ -184,7 +184,7 @@ export default function TabelIzinGuru({ data, children }) {
                     <button
                       className=""
                       onClick={() => {
-                        editBarangFunc(params.id);
+                        EditIzinFunc(params.id);
                         resetError();
                       }}
                     >
@@ -283,7 +283,7 @@ export default function TabelIzinGuru({ data, children }) {
                     <button
                       className=""
                       onClick={() => {
-                        editBarangFunc(params.id);
+                        EditIzinFunc(params.id);
                       }}
                     >
                       <BiEditAlt color="blue" size={20} />
@@ -350,43 +350,6 @@ export default function TabelIzinGuru({ data, children }) {
     console.log(izinEdit);
   };
 
-  // const ajukanIzin = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     if (img != null) {
-  //       const data = new FormData();
-  //       data.append("file", img);
-  //       data.append("upload_preset", "digikostDemoApp");
-  //       data.append("cloud_name", "dkt6ysk5c");
-
-  //       const res = await axios.post(
-  //         "https://api.cloudinary.com/v1_1/dkt6ysk5c/image/upload",
-  //         data,
-  //         {
-  //           headers: {
-  //             "Content-Type": "multipart/form-data",
-  //           },
-  //         }
-  //       );
-
-  //       izin.foto = res.data.secure_url;
-  //     }
-
-  //     const response = await axios.post(
-  //       `${BACKEND_BASE_URL}/api/requestIzinGuru/`,
-  //       izin
-  //     );
-
-  //     if (response.status === 200) {
-  //       console.log("res : ", response);
-  //       window.location.reload();
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //     setErrorIzin(err.response.data.error);
-  //   }
-  // };
-
   const ajukanIzin = async (e) => {
     e.preventDefault();
 
@@ -426,7 +389,6 @@ export default function TabelIzinGuru({ data, children }) {
       );
 
       // Menutup Swal.fire loading
-      swalLoading.close();
 
       console.log("res : ", response);
 
@@ -446,6 +408,7 @@ export default function TabelIzinGuru({ data, children }) {
       swalLoading.close();
       setErrorIzin(err.response.data.error);
       // Menampilkan Swal.fire error
+
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -454,7 +417,7 @@ export default function TabelIzinGuru({ data, children }) {
     }
   };
 
-  const editBarangFunc = async (id) => {
+  const EditIzinFunc = async (id) => {
     try {
       setIdIzin(id);
       setEditBarang(!editBarang);
@@ -466,7 +429,17 @@ export default function TabelIzinGuru({ data, children }) {
     }
   };
 
-  const EditIzin = async () => {
+  const EditIzin = async (e) => {
+    e.preventDefault();
+    const swalLoading = Swal.fire({
+      title: "Memproses...",
+      html: "Mohon tunggu...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     try {
       if (img != null) {
         const data = new FormData();
@@ -515,6 +488,7 @@ export default function TabelIzinGuru({ data, children }) {
       }
     } catch (err) {
       console.log(err);
+      swalLoading.close();
       setErrorIzin(err.response.data.error);
     }
   };
@@ -675,7 +649,9 @@ export default function TabelIzinGuru({ data, children }) {
                     );
                   })}
                 </select>
-                {errIzin?.kurikulum ? <p>{errIzin?.kurikulum}</p> : null}
+                {errIzin?.kurikulum ? (
+                  <p className="text-sm text-red-500">*{errIzin?.kurikulum}</p>
+                ) : null}
               </div>
 
               {izin.typeIzin == "Keluar" ? (
@@ -689,7 +665,11 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="w-full mt-4">
                     <h1 className="font-abc pb-2">Jam Masukk</h1>
@@ -700,7 +680,11 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : izin.typeIzin == "Pulang" ? (
@@ -713,7 +697,11 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : (
@@ -727,7 +715,11 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="flex items-center mt-4 mb-4">
                     <input
@@ -774,7 +766,9 @@ export default function TabelIzinGuru({ data, children }) {
                   placeholder="Keterangan"
                 ></textarea>
               </div>
-              {errIzin.keterangan ? <p>{errIzin.keterangan}</p> : null}
+              {errIzin.keterangan ? (
+                <p className="text-sm text-red-500">*{errIzin.keterangan}</p>
+              ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
                   onClick={(e) => ajukanIzin(e)}
@@ -913,7 +907,11 @@ export default function TabelIzinGuru({ data, children }) {
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="w-full mt-4">
                     <h1 className="font-abc pb-2">Jam Masukkk</h1>
@@ -926,7 +924,11 @@ export default function TabelIzinGuru({ data, children }) {
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamMasuk ? <p>{errIzin.jamMasuk}</p> : null}
+                    {errIzin.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : izinEdit.typeIzin == "Pulang" ? (
@@ -942,7 +944,11 @@ export default function TabelIzinGuru({ data, children }) {
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin.jamKeluar ? <p>{errIzin.jamKeluar}</p> : null}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               ) : (
@@ -956,7 +962,11 @@ export default function TabelIzinGuru({ data, children }) {
                       onChange={(e) => changeIzinEditHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamMasuk ? <p>{errIzin?.jamMasuk}</p> : null}
+                    {errIzin?.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin?.jamMasuk}
+                      </p>
+                    ) : null}
                   </div>
                   {isBukti && izinEdit.typeIzin == "Masuk" ? (
                     <div className="w-full mt-4">
@@ -1004,10 +1014,12 @@ export default function TabelIzinGuru({ data, children }) {
                   required
                 ></textarea>
               </div>
-              {errIzin?.keterangan ? <p>{errIzin?.keterangan}</p> : null}
+              {errIzin?.keterangan ? (
+                <p className="text-sm text-red-500">*{errIzin?.keterangan}</p>
+              ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
-                  onClick={(e) => EditIzin()}
+                  onClick={(e) => EditIzin(e)}
                   className="bg-[#155f95] px-3 py-1 w-[140px] rounded-md text-[#E5D5F2] font-abc"
                 >
                   Simpan

@@ -296,7 +296,7 @@ export default function TabelUser({ data, children }) {
                     </button>
                   ) : null}
                 </div>
-                <div className="">
+                {/* <div className="">
                   <select
                     name=""
                     id="statuss"
@@ -309,7 +309,7 @@ export default function TabelUser({ data, children }) {
                     <option value="1">Siswa</option>
                     <option value="2">Kurikulum</option>
                   </select>
-                </div>
+                </div> */}
                 <div className="mt-1 mb-3 px-3">
                   <form className="block lg:flex xl:flex md:block   md:mt-[0px] lg:mt-0 xl:mt-0  ">
                     <div className="flex">

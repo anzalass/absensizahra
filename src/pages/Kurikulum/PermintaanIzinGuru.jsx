@@ -1,6 +1,6 @@
 import Sidebar from "../../components/layout/Sidebar.jsx";
 import TopBar from "../../components/layout/TopBar.jsx";
-import TableTambahBarang from "../../components/admin/pengadaanbarang/TabelBarang.jsx";
+import TableIzin from "../../components/admin/pengadaanbarang/TabelIzin.jsx";
 import axios, { all } from "axios";
 import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
@@ -24,14 +24,21 @@ export default function PermintaanIzinGuru() {
     if (e.target.value == "") {
       setIzinSearch(Izin);
     } else {
-      const filterIzin = Izin.filter((item) => item.idUser == e.target.value || item.guruPengajar == e.target.value || item.guruPiket == e.target.value);
+      const filterIzin = Izin.filter(
+        (item) =>
+          item.idUser == e.target.value ||
+          item.guruPengajar == e.target.value ||
+          item.guruPiket == e.target.value
+      );
       setIzinSearch(filterIzin);
     }
-  }
+  };
 
   const fetchData = async () => {
     try {
-      const result = await axios.get(`${BACKEND_BASE_URL}/api/getIzinById/${user.id}`);
+      const result = await axios.get(
+        `${BACKEND_BASE_URL}/api/getIzinById/${user.id}`
+      );
       setIzin(result.data.results);
       setIzinSearch(result.data.results);
       console.log(result.data.results);
@@ -53,14 +60,12 @@ export default function PermintaanIzinGuru() {
       <div className={`w-11/12 mx-auto`}>
         <TopBar>{"Semua Izin"}</TopBar>
         <div className="w-[95%] h-[80px] lg:justify-between justify-center xl:justify-between mx-auto flex">
-          <div className="">
-
-          </div>
+          <div className=""></div>
           {addIzin ? null : (
             <div className=" mt-5 px-3 py-1 w-[200px] h-[40px] rounded-md  font-abc">
               <input
                 type="text"
-                onChange={e => onChangeSearch(e)}
+                onChange={(e) => onChangeSearch(e)}
                 className="w-full h-full pl-2 rounded-lg"
                 placeholder="Search"
               />
@@ -69,8 +74,7 @@ export default function PermintaanIzinGuru() {
         </div>
         <div className="w-[95%] opacity-25 mx-auto mt-0 h-[1px] bg-slate-600"></div>
 
-        {!addIzin ? <TableTambahBarang data={izinSearch} /> : null}
-
+        {!addIzin ? <TableIzin data={izinSearch} /> : null}
       </div>
     </div>
   );
