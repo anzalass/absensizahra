@@ -50,7 +50,6 @@ export default function EditUser() {
       ...userSelected,
       [e.target.name]: e.target.value,
     });
-    console.log(userSelected);
   };
 
   const UpdateUser = async () => {

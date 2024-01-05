@@ -59,7 +59,7 @@ export default function AddUser() {
             },
           }
         );
-        console.log("link :", res.data?.secure_url);
+
         data.fotoprofile = res?.data?.secure_url;
       }
 

@@ -31,7 +31,6 @@ export default function LoginPage({ children }) {
       ...data,
       [e.target.name]: e.target.value,
     });
-    // console.log(data);
   };
 
   const login = async (e) => {

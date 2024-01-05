@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../components/layout/Sidebar";
-import TopBar from "../../components/layout/TopBar";
-import TableIzin from "../../components/admin/pengadaanbarang/TabelIzin.jsx";
+import Sidebar from "../components/layout/Sidebar.jsx";
+import TopBar from "../components/layout/TopBar.jsx";
+import TableIzin from "../components/admin/Tabel/TabelIzin.jsx";
 import axios from "axios";
-import { BACKEND_BASE_URL, BASE_URL } from "../../config/base_url";
+import { BACKEND_BASE_URL, BASE_URL } from "../config/base_url.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
@@ -22,7 +22,6 @@ export default function DetailIzin() {
 
   useEffect(() => {
     fetchData();
-    console.log("ini id : ", id);
   }, [id]);
 
   useEffect(() => {
@@ -106,8 +105,6 @@ export default function DetailIzin() {
           });
         }
       });
-
-      console.log("wehhh");
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -121,8 +118,6 @@ export default function DetailIzin() {
       `${BACKEND_BASE_URL}/api/getIzinById/${id}`
     );
 
-    console.log(getIzinById.data.results);
-
     setAllUser(getAllUser.data.results);
     setIzin(getIzinById.data.results);
   };
@@ -135,20 +130,26 @@ export default function DetailIzin() {
 
       if (res.status == 200) {
         if (user?.role == 2) {
-          setTimeout(() => {
-            window.location.href = "/PermintaanIzinGuru";
-          }, 1000);
+          Swal.fire({
+            title: "Berhasil membatalkan izin",
+            showConfirmButton: false,
+            timer: 1000,
+            icon: "success",
+            didClose: () => {
+              window.location.href = "/PermintaanIzinGuru";
+            },
+          });
         } else {
-          setTimeout(() => {
-            window.location.href = "/Izin";
-          }, 1000);
+          Swal.fire({
+            title: "Berhasil membatalkan izin",
+            showConfirmButton: false,
+            timer: 1000,
+            icon: "success",
+            didClose: () => {
+              window.location.href = "/Izin";
+            },
+          });
         }
-        Swal.fire({
-          title: "Berhasil membatalkan izin",
-          showConfirmButton: false,
-          timer: 1000,
-          icon: "success",
-        });
       }
     } catch (err) {
       console.log(err);
@@ -178,11 +179,11 @@ export default function DetailIzin() {
         </TopBar>
 
         {izin ? (
-          <div className="w-[95%] mx-auto mt-2 mb-[80px]  flex">
+          <div className="w-[95%] mx-auto  mb-[80px]  flex">
             <div className="block w-full font-abc">
               {izin[0]?.foto ? (
                 <img
-                  className="w-[60%] h-[60%] rounded-lg mx-auto object-contain"
+                  className="w-[60%] h-[60%] mt-[50px] mb-[40px] rounded-lg mx-auto object-contain"
                   src={izin[0]?.foto}
                   alt=""
                 />

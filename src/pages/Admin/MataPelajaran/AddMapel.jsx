@@ -83,7 +83,6 @@ export default function AddMapel() {
   };
 
   const DeleteMapel = async (id) => {
-    console.log("ini id nya : ", id);
     const result = await axios.delete(
       `${BACKEND_BASE_URL}/api/DeleteMapel/` + id
     );
@@ -97,7 +96,6 @@ export default function AddMapel() {
       ...mapel,
       [e.target.name]: e.target.value,
     });
-    // console.log(kategori);
   };
 
   useEffect(() => {
@@ -110,9 +108,8 @@ export default function AddMapel() {
         `${BACKEND_BASE_URL}/api/getMataPelajaran`
       );
       setAllMapel(resultPelajaran.data.results);
-      console.log();
     } catch (err) {
-      console.log("something went wrong");
+      console.log(err);
     }
   };
 

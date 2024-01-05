@@ -2,13 +2,14 @@ import { useState } from "react";
 import digiKosLogo from "../../assets/20231121_094728_0000_2-removebg-previeww 1.svg";
 import { GrHomeRounded, GrLogout } from "react-icons/gr";
 import { BsPencilSquare } from "react-icons/bs";
+import { BsCardChecklist } from "react-icons/bs";
 
 import { GiHamburgerMenu } from "react-icons/gi";
-import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../../config/base_url";
 import Swal from "sweetalert2";
+import { FaUber, FaUser } from "react-icons/fa";
 export default function Sidebar({ open, setSidebar, width, setWidth }) {
   const { user } = useSelector((state) => state.user);
   let sidebarMenu = [];
@@ -51,9 +52,9 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
         icon: <GrHomeRounded className={` fill-white  my-auto`} />,
       },
       {
-        title: "Users",
+        title: "Pengguna",
         url: "/AllUsers",
-        icon: <BsPencilSquare className="my-auto" />,
+        icon: <FaUser className="my-auto" />,
       },
     ];
   } else if (user?.role == 5) {
@@ -66,14 +67,17 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
       {
         title: "Permintaan Izin Siswa",
         url: "/PermintaanIzinSiswa",
-        icon: (
-          <HiMiniClipboardDocumentList className={` fill-white  my-auto`} />
-        ),
+        icon: <BsCardChecklist className={`  my-auto`} />,
       },
       {
         title: "Permintaan Izin Guru",
         url: "/PermintaanIzin",
         icon: <BsPencilSquare className="my-auto" />,
+      },
+      {
+        title: "Pengguna",
+        url: "/AllUsers",
+        icon: <FaUser className="my-auto" />,
       },
     ];
   }

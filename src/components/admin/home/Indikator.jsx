@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Frame4 from "../../../assets/Frame(4).png";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import AdminDetailCard from "./AdminDetailCard";
+import DetailCard from "./DetailCard";
 import { Link } from "react-router-dom";
 import { BACKEND_BASE_URL } from "../../../config/base_url";
 
@@ -101,14 +101,24 @@ export default function Indikator() {
                   {siswa?.pending}
                 </h1>
                 <h1 className=" text-white font-[500] text-[16px]">
-                  Izin Pending
+                  Menunggu Persetujuan
+                </h1>
+              </div>
+            </Link>
+            <Link to={"/Izin"}>
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-purple-500">
+                <h1 className=" text-white font-[500] text-[20px]">
+                  {siswa?.masuk + siswa?.keluar + siswa?.pulang}
+                </h1>
+                <h1 className=" text-white font-[500] text-[16px]">
+                  Total Izin
                 </h1>
               </div>
             </Link>
           </div>
 
           <div className=" lg:w-[50%] xl:w-[50%] md:w-[50%] w-full  xl:px-10 lg:px-10 md:px-10 px-3 xl:-mt-3 lg:-mt-3 md:-mt-3 mt-10">
-            <AdminDetailCard />
+            <DetailCard />
           </div>
         </div>
       ) : user?.role === 4 ? (
@@ -151,7 +161,7 @@ export default function Indikator() {
           </div>
 
           <div className=" lg:w-[50%] xl:w-[50%] md:w-[50%] w-full  xl:px-10 lg:px-10 md:px-10 px-3 xl:-mt-3 lg:-mt-3 md:-mt-3 mt-10">
-            <AdminDetailCard />
+            <DetailCard />
           </div>
         </div>
       ) : user?.role === 2 ? (
@@ -240,7 +250,7 @@ export default function Indikator() {
           </div>
 
           <div className=" lg:w-[50%] xl:w-[50%] md:w-[50%] w-full  xl:px-10 lg:px-10 md:px-10 px-3 xl:-mt-3 lg:-mt-3 md:-mt-3 mt-10">
-            <AdminDetailCard />
+            <DetailCard />
           </div>
         </div>
       ) : user?.role === 5 ? (
@@ -279,7 +289,7 @@ export default function Indikator() {
                 Daftar Kurikulum
               </h1>
             </div>
-            <Link to={"/PermintaanIzinSiswa"}>
+            <Link to={"/PermintaanIzin"}>
               <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-purple-500">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {kurikulum?.guruWaiting}
@@ -289,7 +299,7 @@ export default function Indikator() {
                 </h1>
               </div>
             </Link>
-            <Link to={"/PermintaanIzin"}>
+            <Link to={"/PermintaanIzinSiswa"}>
               <div className=" pl-3 pt-6 h-[100px] relative rounded-md w-[100%] bg-[#000]">
                 <h1 className=" text-white font-[500] text-[20px]">
                   {kurikulum?.siswaWaiting}
@@ -302,7 +312,7 @@ export default function Indikator() {
           </div>
 
           <div className=" lg:w-[50%] xl:w-[50%] md:w-[50%] w-full  xl:px-10 lg:px-10 md:px-10 px-3 xl:-mt-3 lg:-mt-3 md:-mt-3 mt-10">
-            <AdminDetailCard />
+            <DetailCard />
           </div>
         </div>
       ) : null}

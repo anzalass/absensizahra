@@ -18,7 +18,6 @@ export default function MapelSiswa() {
     try {
       const result = await axios.get(`${BACKEND_BASE_URL}/api/getIzin`);
       setIzin(result.data.results);
-      console.log(result.data.results);
 
       await new Promise((resolve) => setTimeout(resolve, 1000)); // 1000 milliseconds
     } catch (err) {

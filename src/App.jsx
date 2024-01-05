@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import SemuaIzinGuru from "./pages/Kurikulum/Izin";
 import SemuaIzin from "./pages/Siswa/SemuaIzin";
 import IzinGuru from "./pages/Guru/Izin";
-import DetailIzin from "./pages/Siswa/DetailIzin";
+import DetailIzin from "./pages/DetailIzin";
 import PermissionGuruPengajar from "./pages/Guru/PermissionGuruPengajar";
 import AllUser from "./pages/Admin/User/AllUser";
 import AddUser from "./pages/Admin/User/AddUser";
@@ -22,6 +22,7 @@ import LandingPage from "./pages/LandingPage";
 import PermintaanIzinSiswa from "./pages/Kurikulum/PermintaanIzinSiswa";
 import NotfoundPage from "./pages/NotfoundPage";
 import NfPage from "./pages/NfPage";
+import DetailUser from "./pages/Kurikulum/DetailUser";
 
 function App() {
   const { isLogin, user } = useSelector((state) => state.user);
@@ -70,7 +71,9 @@ function App() {
         ) : user?.role == 5 ? (
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/DetailUser/:id" element={<DetailUser />} />
             <Route path="/home" element={<HomePage />} />
+            <Route path="/AllUsers" element={<AllUser />} />
             <Route path="/PermintaanIzin" element={<SemuaIzinGuru />} />
             <Route
               path="/PermintaanIzinSiswa"

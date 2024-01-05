@@ -1,6 +1,6 @@
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
-import { AiOutlineArrowRight } from "react-icons/ai";
+import { AiOutlineArrowRight, AiOutlineEye } from "react-icons/ai";
 import { BiEditAlt } from "react-icons/bi";
 import { BsEye, BsTrash3 } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,7 @@ export default function TabelUser({ data, children }) {
   const [filterBulan, setFilterBulan] = useState("");
   const [filterTahun, setFilterTahun] = useState("");
   const [keyword, setKeyword] = useState("");
-  const [status, setStatus] = useState("");
+  const [role, setRole] = useState("");
   const bulan = [
     "Januari",
     "Febuari",
@@ -64,7 +64,6 @@ export default function TabelUser({ data, children }) {
 
   useEffect(() => {
     fetchData();
-    console.log(data.length);
   }, []);
 
   const fetchData = async () => {
@@ -138,7 +137,8 @@ export default function TabelUser({ data, children }) {
           (keyword === "" ||
             item.name.toLowerCase().includes(keyword.toLowerCase()) ||
             item.email.toLowerCase().includes(keyword.toLowerCase()) ||
-            item.noHP.toLowerCase().includes(keyword.toLowerCase()))
+            item.noHP.toLowerCase().includes(keyword.toLowerCase())) &&
+          (role === "" || item.role.toString() === role)
       )
       .forEach((a, index) => {
         row.push({
@@ -199,6 +199,14 @@ export default function TabelUser({ data, children }) {
             <button className="" onClick={() => nav(`/EditUser/${params.id}`)}>
               <BiEditAlt color="blue" size={20} />
             </button>
+            {user?.role === 5 ? (
+              <button
+                className="ml-3"
+                onClick={() => nav(`/DetailUser/${params.id}`)}
+              >
+                <AiOutlineEye color="" size={20} />
+              </button>
+            ) : null}
           </div>
         );
       },
@@ -296,34 +304,35 @@ export default function TabelUser({ data, children }) {
                     </button>
                   ) : null}
                 </div>
-                {/* <div className="">
-                  <select
-                    name=""
-                    id="statuss"
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="border h-[34px] rounded-xl mt-2 w-[100px] pl-2 "
-                  >
-                    <option value="">Role</option>
-                    <option value="4">Admin</option>
-                    <option value="2">Guru</option>
-                    <option value="1">Siswa</option>
-                    <option value="2">Kurikulum</option>
-                  </select>
-                </div> */}
-                <div className="mt-1 mb-3 px-3">
-                  <form className="block lg:flex xl:flex md:block   md:mt-[0px] lg:mt-0 xl:mt-0  ">
-                    <div className="flex">
-                      <input
-                        type="text"
-                        onChange={(e) => {
-                          console.log(e.target.value);
-                          setKeyword(e.target.value);
-                        }}
-                        placeholder="cari pengguna"
-                        className="h-[40px] pl-3 rounded-md w-full border-2 "
-                      />
-                    </div>
-                  </form>
+                <div className="flex">
+                  <div className="">
+                    <select
+                      name=""
+                      id="statuss"
+                      onChange={(e) => setRole(e.target.value)}
+                      className="border h-[34px] rounded-xl mt-2 w-[100px] pl-2 "
+                    >
+                      <option value="">Role</option>
+                      <option value="4">Admin</option>
+                      <option value="2">Guru</option>
+                      <option value="1">Siswa</option>
+                      <option value="2">Kurikulum</option>
+                    </select>
+                  </div>
+                  <div className="mt-1 mb-3 px-3">
+                    <form className="block lg:flex xl:flex md:block   md:mt-[0px] lg:mt-0 xl:mt-0  ">
+                      <div className="flex">
+                        <input
+                          type="text"
+                          onChange={(e) => {
+                            setKeyword(e.target.value);
+                          }}
+                          placeholder="cari pengguna"
+                          className="h-[40px] pl-3 rounded-md w-full border-2 "
+                        />
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
 

@@ -59,7 +59,6 @@ export default function TabelMapel({ data, children }) {
 
   useEffect(() => {
     fetchData();
-    console.log(data.length);
   }, []);
 
   const fetchData = async () => {
@@ -74,7 +73,6 @@ export default function TabelMapel({ data, children }) {
       ...mapelSiswa,
       [e.target.name]: e.target.value,
     });
-    console.log(izin);
   };
 
   const ajukanIzin = async (e) => {
@@ -602,13 +600,14 @@ export default function TabelMapel({ data, children }) {
                         >
                           <option value="">Bulan</option>
                           {bulan.map((item, index) => {
-                            return <option value={index}>{item}</option>;
+                            return (
+                              <option key={index} value={index}>
+                                {item}
+                              </option>
+                            );
                           })}
                         </select>
                       </div>
-                    </div>
-
-                    <div className="flex">
                       <div className="">
                         <select
                           name=""
@@ -618,7 +617,11 @@ export default function TabelMapel({ data, children }) {
                         >
                           <option value="">Tahun</option>
                           {tahun.map((item, index) => {
-                            return <option value={item}>{item}</option>;
+                            return (
+                              <option key={index} value={item}>
+                                {item}
+                              </option>
+                            );
                           })}
                         </select>
                       </div>

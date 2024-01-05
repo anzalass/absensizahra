@@ -1,17 +1,15 @@
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
-import { AiOutlineArrowRight } from "react-icons/ai";
 import { BiEditAlt } from "react-icons/bi";
 import { BsEye, BsTrash3 } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../layout/Spinner";
 import axios from "axios";
-
 import { useSelector } from "react-redux";
 import { BACKEND_BASE_URL } from "../../../config/base_url";
 import Swal from "sweetalert2";
 
-export default function TabelIzin({ data, children }) {
+export default function TabelIzinGuru({ data, children }) {
   const nav = useNavigate();
   const { user } = useSelector((state) => state.user);
   const [editBarang, setEditBarang] = useState(false);
@@ -21,18 +19,11 @@ export default function TabelIzin({ data, children }) {
   const [izinEdit, setIzinEdit] = useState([]);
   const [mapel, setMapel] = useState([]);
   const [idIzin, setIdIzin] = useState();
-  const [isSelect, setSelect] = useState(true);
-  const [guruPengajar, setGuruPengajar] = useState([]);
   const [kurikulum, setKurikulum] = useState([]);
   const [AllUser, setAllUser] = useState([]);
   const [filterBulan, setFilterBulan] = useState("");
   const [filterTahun, setFilterTahun] = useState("");
   const [status, setStatus] = useState("");
-
-  let CheckMapel = mapel.filter(
-    (item) => item.kodePelajaran == izinEdit.idMapel
-  ).length;
-
   const bulan = [
     "Januari",
     "Febuari",
@@ -61,163 +52,251 @@ export default function TabelIzin({ data, children }) {
 
   const [izin, setIzin] = useState({
     idUser: user.id,
-    idMapel: "",
-    kelas: user.kelas,
-    guruPengajar: "",
     kurikulum: "",
     foto: null,
     jamKeluar: "",
     jamMasuk: "",
     keterangan: "",
     typeIzin: "Masuk",
-    responGuruPengajar: "pending",
+    responKurikulum: "pending",
   });
 
   const [errIzin, setErrorIzin] = useState({
-    idMapel: "",
-    kelas: "",
-    guruPengajar: "",
     kurikulum: "",
     jamKeluar: "",
     jamMasuk: "",
     keterangan: "",
     typeIzin: "",
-    responGuruPengajar: "",
+    responKurikulum: "",
   });
 
   useEffect(() => {
-    console.log("user session : ", user);
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log("ini data : ", data);
-  }, [data]);
+  let columns = [];
 
-  const columns = [
-    {
-      field: "no",
-      headerName: "No",
-      headerClassName: "bg-slate-200 text-center font-abc",
-      minWidth: 50,
-      flex: 0.5,
-    },
-    {
-      field: "idUser",
-      headerName: "Siswa",
-      headerClassName: "bg-slate-200 text-center font-abc",
-      minWidth: 100,
-      flex: 0.7,
-    },
-    {
-      field: "idMapel",
-      headerName: "Mata Pelajaran",
-      headerClassName: "bg-slate-200 text-center font-abc",
-      minWidth: 150,
-      flex: 0.7,
-    },
-    {
-      field: "guruPengajar",
-      headerName: "Guru Pengajar",
-      headerClassName: "bg-slate-200 text-center font-abc",
-      minWidth: 100,
-      flex: 0.7,
-    },
-    {
-      field: "typeIzin",
-      headerName: "Type Izin",
-      headerClassName: "bg-slate-200 text-center font-abc",
-      minWidth: 100,
-      flex: 0.7,
-    },
-    {
-      field: "tanggal",
-      headerName: "Tanggal",
-      headerClassName: "bg-slate-200 text-center font-abc",
-      minWidth: 100,
-      flex: 0.7,
-    },
-    {
-      field: "statusPengajuan",
-      headerName: "Status",
-      headerClassName: "bg-slate-200 text-center font-abc",
-      minWidth: 100,
-      flex: 0.7,
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <div
-            className={`${
-              params.row.statusPengajuan === "pending"
-                ? "bg-yellow-400 text-white"
-                : params.row.statusPengajuan === "Diizinkan"
-                ? "bg-green-500"
-                : params.row.statusPengajuan === "Ditolak"
-                ? "bg-red-600"
-                : "bg-gray-700"
-            } h-full text-center pt-3 text-white font-abc w-full `}
-          >
-            {params.row.statusPengajuan}
-          </div>
-        );
+  if (user?.role == 2) {
+    columns = [
+      {
+        field: "no",
+        headerName: "No",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 50,
+        flex: 0.5,
       },
-    },
-    {
-      field: "aksi",
-      headerName: "Aksi",
-      headerClassName: "bg-slate-200 text-center font-abc",
-      flex: 0.7,
-      minWidth: 150,
+      {
+        field: "idUser",
+        headerName: "Pengaju",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 100,
+        flex: 0.7,
+      },
+      {
+        field: "kurikulum",
+        headerName: "Kurikulum",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 100,
+        flex: 0.7,
+      },
+      {
+        field: "typeIzin",
+        headerName: "Type Izin",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 100,
+        flex: 0.7,
+      },
+      {
+        field: "tanggal",
+        headerName: "Tanggal",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 100,
+        flex: 0.7,
+      },
+      {
+        field: "statusPengajuan",
+        headerName: "Responss",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 100,
+        flex: 0.7,
+        sortable: false,
+        renderCell: (params) => {
+          return (
+            <div
+              className={`${
+                params.row.statusPengajuan === "pending"
+                  ? "bg-yellow-400 text-white"
+                  : params.row.statusPengajuan === "Diizinkan"
+                  ? "bg-green-500"
+                  : params.row.statusPengajuan === "Ditolak"
+                  ? "bg-red-600"
+                  : "bg-gray-700"
+              } h-full text-center pt-3 text-white font-abc w-full `}
+            >
+              {params.row.statusPengajuan}
+            </div>
+          );
+        },
+      },
+      {
+        field: "aksi",
+        headerName: "Aksi",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        flex: 0.7,
+        minWidth: 150,
 
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <div className="flex">
-            <>
-              <button
-                className="mr-4"
-                onClick={() => {
-                  nav("/Detail/" + params.id);
-                }}
-              >
-                <BsEye size={20} />
-              </button>
+        sortable: false,
+        renderCell: (params) => {
+          return (
+            <div className="flex">
+              <>
+                <button
+                  className="mr-4"
+                  onClick={() => {
+                    nav("/Detail/" + params.id);
+                  }}
+                >
+                  <BsEye size={20} />
+                </button>
 
-              {user?.role === 1 &&
-                params.row.statusPengajuan === "pending" &&
-                params.row.responGuruPengajar === "pending" && (
+                {user?.role === 2 &&
+                  params.row.statusPengajuan === "pending" && (
+                    <button
+                      className=""
+                      onClick={() => {
+                        EditIzinFunc(params.id);
+                        resetError();
+                      }}
+                    >
+                      <BiEditAlt color="blue" size={20} />
+                    </button>
+                  )}
+              </>
+            </div>
+          );
+        },
+      },
+    ];
+  } else {
+    columns = [
+      {
+        field: "no",
+        headerName: "No",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 50,
+        flex: 0.5,
+      },
+      {
+        field: "idUser",
+        headerName: "Siswa",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 100,
+        flex: 0.7,
+      },
+      {
+        field: "idMapel",
+        headerName: "Mata Pelajaran",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 150,
+        flex: 0.7,
+      },
+      {
+        field: "typeIzin",
+        headerName: "Type Izin",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 100,
+        flex: 0.7,
+      },
+      {
+        field: "tanggal",
+        headerName: "Tanggal",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 100,
+        flex: 0.7,
+      },
+      {
+        field: "statusPengajuan",
+        headerName: "Status Pengajuan",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        minWidth: 100,
+        flex: 0.7,
+        sortable: false,
+        renderCell: (params) => {
+          return (
+            <div
+              className={`${
+                params.row.statusPengajuan === "pending"
+                  ? "bg-yellow-400 text-white"
+                  : params.row.statusPengajuan === "Diizinkan"
+                  ? "bg-green-500"
+                  : params.row.statusPengajuan === "Ditolak"
+                  ? "bg-red-600"
+                  : "bg-gray-700"
+              } h-full text-center pt-3 text-white font-abc w-full `}
+            >
+              {params.row.statusPengajuan}
+            </div>
+          );
+        },
+      },
+      {
+        field: "aksi",
+        headerName: "Aksi",
+        headerClassName: "bg-slate-200 text-center font-abc",
+        flex: 0.7,
+        minWidth: 150,
+
+        sortable: false,
+        renderCell: (params) => {
+          return (
+            <div className="flex">
+              {params.row.status == "pending" ? (
+                params.row.idAdmin == user?.id ? (
+                  <>
+                    <button
+                      className="mr-4"
+                      onClick={() => DeletePengadaan(params.id)}
+                    >
+                      <BsTrash3 color="red" size={20} />
+                    </button>
+                    <button
+                      className=""
+                      onClick={() => {
+                        EditIzinFunc(params.id);
+                      }}
+                    >
+                      <BiEditAlt color="blue" size={20} />
+                    </button>
+                  </>
+                ) : (
+                  <></>
+                )
+              ) : (
+                <>
                   <button
-                    className=""
+                    className="mr-4"
                     onClick={() => {
-                      EditIzinFunc(params.id);
-                      resetError();
+                      nav("/Detail/" + params.id);
                     }}
                   >
-                    <BiEditAlt color="blue" size={20} />
+                    <BsEye size={20} />
                   </button>
-                )}
-            </>
-          </div>
-        );
+                </>
+              )}
+            </div>
+          );
+        },
       },
-    },
-  ];
+    ];
+  }
 
   const fetchData = async () => {
-    const getMapel = await axios.get(
-      `${BACKEND_BASE_URL}/api/getMataPelajaran`
-    );
-    const getGuruPengajar = await axios.get(
-      `${BACKEND_BASE_URL}/api/getGuruPengajar`
-    );
     const getKurikulum = await axios.get(
       `${BACKEND_BASE_URL}/api/getKurikulum`
     );
     const getAllUser = await axios.get(`${BACKEND_BASE_URL}/api/getUser`);
 
-    setMapel(getMapel.data.results);
     setAllUser(getAllUser.data.results);
-    setGuruPengajar(getGuruPengajar.data.results);
     setKurikulum(getKurikulum.data.results);
   };
 
@@ -225,12 +304,12 @@ export default function TabelIzin({ data, children }) {
     setErrorIzin({
       idMapel: "",
       kelas: "",
-      guruPengajar: "",
+      kurikulum: "",
       jamKeluar: "",
       jamMasuk: "",
       keterangan: "",
       typeIzin: "",
-      responGuruPengajar: "",
+      responKurikulum: "",
     });
   };
 
@@ -239,7 +318,6 @@ export default function TabelIzin({ data, children }) {
       ...izin,
       [e.target.name]: e.target.value,
     });
-    console.log(izin);
   };
 
   const changeIzinEditHandler = (e) => {
@@ -247,12 +325,12 @@ export default function TabelIzin({ data, children }) {
       ...izinEdit,
       [e.target.name]: e.target.value,
     });
-    console.log(izinEdit);
   };
 
   const ajukanIzin = async (e) => {
     e.preventDefault();
 
+    // Menampilkan Swal.fire loading
     const swalLoading = Swal.fire({
       title: "Memproses...",
       html: "Mohon tunggu...",
@@ -269,7 +347,6 @@ export default function TabelIzin({ data, children }) {
         data.append("file", img);
         data.append("upload_preset", "digikostDemoApp");
         data.append("cloud_name", "dkt6ysk5c");
-
         const res = await axios.post(
           "https://api.cloudinary.com/v1_1/dkt6ysk5c/image/upload",
           data,
@@ -289,25 +366,32 @@ export default function TabelIzin({ data, children }) {
           setErrorIzin({
             jamMasuk: `Jam masuk tidak boleh kurang dari jam ${izin.jamKeluar}`,
           });
-          console.log("gaboleh");
           return;
         }
       }
       const response = await axios.post(
-        `${BACKEND_BASE_URL}/api/requestIzin`,
+        `${BACKEND_BASE_URL}/api/requestIzinGuru/`,
         izin
       );
 
       Swal.fire({
-        showConfirmButton: false,
-        title: "Berhasil mengajukan izin",
-        timer: 1000,
         icon: "success",
+        title: "Izin berhasil diajukan!",
+        showConfirmButton: false,
+        timer: 1500,
       });
+
       window.location.reload();
     } catch (err) {
+      console.log(err);
       swalLoading.close();
       setErrorIzin(err.response.data.error);
+
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Terjadi kesalahan.",
+      });
     }
   };
 
@@ -316,14 +400,10 @@ export default function TabelIzin({ data, children }) {
       setIdIzin(id);
       setEditBarang(!editBarang);
       const res = await axios.get(`${BACKEND_BASE_URL}/api/getIzinById/${id}`);
-      console.log("kesini ya : ", res.data.results[0]);
       setIzinEdit(res.data.results[0]);
-      CheckMapel = mapel.filter(
-        (item) => item.kodePelajaran == res.data.results.idMapel
-      ).length;
     } catch (err) {
       console.log(err);
-      setErrorIzin(err);
+      // setErrorIzin(err.response.data.error);
     }
   };
 
@@ -355,40 +435,37 @@ export default function TabelIzin({ data, children }) {
           }
         );
 
-        izinEdit.foto = res?.data.secure_url;
+        izinEdit.foto = res.data.secure_url;
         const response = await axios.put(
-          `${BACKEND_BASE_URL}/api/EditIzin/${idIzin}`,
+          `${BACKEND_BASE_URL}/api/EditIzinGuru/${idIzin}`,
           izinEdit
         );
-        if (response.status === 200) {
-          Swal.fire({
-            title: "Berhasil mengedit izin",
-            showConfirmButton: false,
-            timer: 1000,
-            icon: "success",
-            didClose: () => {
-              window.location.reload();
-            },
-          });
-        }
+        Swal.fire({
+          title: "Berhasil mengedit izin",
+          showConfirmButton: false,
+          timer: 1000,
+          icon: "success",
+          didClose: () => {
+            window.location.reload();
+          },
+        });
       } else {
         const response = await axios.put(
-          `${BACKEND_BASE_URL}/api/EditIzin/${idIzin}`,
+          `${BACKEND_BASE_URL}/api/EditIzinGuru/${idIzin}`,
           izinEdit
         );
-        if (response.status === 200) {
-          Swal.fire({
-            title: "Berhasil mengedit izin",
-            showConfirmButton: false,
-            timer: 1000,
-            icon: "success",
-            didClose: () => {
-              window.location.reload();
-            },
-          });
-        }
+        Swal.fire({
+          title: "Berhasil mengedit izin",
+          showConfirmButton: false,
+          timer: 1000,
+          icon: "success",
+          didClose: () => {
+            window.location.reload();
+          },
+        });
       }
     } catch (err) {
+      console.log(err);
       swalLoading.close();
       setErrorIzin(err.response.data.error);
     }
@@ -406,36 +483,76 @@ export default function TabelIzin({ data, children }) {
             new Date(item.created_at).getMonth() === Number(filterBulan)) &&
           (filterTahun === "" ||
             new Date(item.created_at).getFullYear() === Number(filterTahun)) &&
-          (status === "" || item.statusPengajuan === status)
+          (status === "" || item.statusPengajuan === status) &&
+          (user?.role == 5
+            ? item.kurikulum === user?.id
+            : item.idUser === user?.id)
       )
       .forEach((a, index) => {
-        console.log("a : ", a);
         const pushMapel = mapel.filter(
           (item) => item.kodePelajaran == a.idMapel
         );
-        const pushGuruPengajar = guruPengajar.filter(
-          (item) => item.id == a.guruPengajar
-        );
         const pushSiswa = AllUser.filter((item) => item.id == a.idUser);
-        if (pushGuruPengajar[0] != undefined && pushSiswa[0] != undefined) {
-          if (pushMapel[0] == undefined) {
-            pushMapel[0] = { namaPelajaran: a.idMapel };
+        if (user?.role == 2 || user?.role == 5) {
+          const pushKurikulum = AllUser.filter(
+            (item) => item.id == a.kurikulum
+          );
+          if (
+            pushMapel[0] != undefined &&
+            pushKurikulum[0] != undefined &&
+            pushSiswa[0] != undefined &&
+            pushKurikulum[0] != undefined
+          ) {
+            row.push({
+              id: a.id,
+              no: index + 1,
+              idUser: pushSiswa[0].name,
+              idMapel: pushMapel[0].namaPelajaran,
+              kelas: a.kelas,
+              kurikulum: pushKurikulum[0].name,
+              jamMasuk: a.jamMasuk,
+              jamKeluar: a.jamKeluar,
+              keterangan: a.keterangan,
+              typeIzin: a.typeIzin,
+              tanggal: new Date(a.created_at).toLocaleDateString(),
+              responKurikulum: a.responKurikulum,
+              statusPengajuan: a.statusPengajuan,
+            });
+          } else if (pushMapel[0] == undefined && a.kelas == null) {
+            const pushKurikulum = AllUser.filter(
+              (item) => item.id == a.kurikulum
+            );
+            if (pushKurikulum[0] != undefined) {
+              row.push({
+                id: a.id,
+                no: index + 1,
+                idUser: pushSiswa[0].name,
+                kurikulum: pushKurikulum[0].name,
+                jamMasuk: a.jamMasuk,
+                jamKeluar: a.jamKeluar,
+                keterangan: a.keterangan,
+                typeIzin: a.typeIzin,
+                tanggal: new Date(a.created_at).toLocaleDateString(),
+                responKurikulum: a.responKurikulum,
+                statusPengajuan: a.statusPengajuan,
+              });
+            }
           }
-          row.push({
-            id: a.id,
-            no: index + 1,
-            idUser: pushSiswa[0].name,
-            idMapel: pushMapel[0].namaPelajaran,
-            kelas: a.kelas,
-            guruPengajar: pushGuruPengajar[0].name,
-            jamMasuk: a.jamMasuk,
-            jamKeluar: a.jamKeluar,
-            keterangan: a.keterangan,
-            typeIzin: a.typeIzin,
-            tanggal: new Date(a.created_at).toLocaleDateString(),
-            responGuruPengajar: a.responGuruPengajar,
-            statusPengajuan: a.statusPengajuan,
-          });
+        } else {
+          if (pushMapel[0] != undefined && pushSiswa[0] != undefined) {
+            row.push({
+              id: a.id,
+              no: index + 1,
+              idUser: pushSiswa[0].name,
+              idMapel: pushMapel[0].namaPelajaran,
+              kelas: a.kelas,
+              jamMasuk: a.jamMasuk,
+              jamKeluar: a.jamKeluar,
+              keterangan: a.keterangan,
+              typeIzin: a.typeIzin,
+              tanggal: new Date(a.created_at).toLocaleDateString(),
+            });
+          }
         }
       });
   };
@@ -446,7 +563,7 @@ export default function TabelIzin({ data, children }) {
     <>
       <div className="bg-white w-[96%] mt-3  mb-[200px]  mx-auto p-3 rounded-lg">
         {pengadaanBarang ? (
-          <div className="w-[95%] mx-auto h-[130vh] bg-white rounded-xl">
+          <div className="w-[95%] mx-auto min-h-screen bg-white rounded-xl">
             <div action="" className="w-[95%] mx-auto mt-2 p-3">
               <button
                 type="button"
@@ -486,52 +603,14 @@ export default function TabelIzin({ data, children }) {
                 Izin Pulang
               </button>
               {img && izin.typeIzin == "Masuk" ? (
-                <div className="w-full h-[300px] ">
+                <div className="w-full ">
                   <img
-                    className="w-[60%] rounded-lg h-full mx-auto object-contain"
+                    className="w-[60%] h-[60%] rounded-lg mx-auto object-contain"
                     src={URL.createObjectURL(img)}
                     alt=""
                   />
                 </div>
               ) : null}
-
-              <div className="w-full mt-4">
-                <h1 className="font-abc pb-2 ">Mata Pelajarannn</h1>
-                <input
-                  type="text"
-                  name="idMapel"
-                  onChange={(e) => changeIzinHandler(e)}
-                  className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                />
-                {errIzin?.idMapel ? (
-                  <p className="text-red-500 text-sm">*{errIzin?.idMapel}</p>
-                ) : null}
-              </div>
-
-              <div className="w-full mt-4">
-                <h1 className="font-abc pb-2 ">Guru Pengajar</h1>
-                <select
-                  name="guruPengajar"
-                  onChange={(e) => changeIzinHandler(e)}
-                  id=""
-                  className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                >
-                  <option value="">- Select Guru Pengajar -</option>
-
-                  {guruPengajar.map((item, index) => {
-                    return (
-                      <option key={index} value={`${item.id}`}>
-                        {item.name}
-                      </option>
-                    );
-                  })}
-                </select>
-                {errIzin?.guruPengajar ? (
-                  <p className="text-red-500 text-sm">
-                    *{errIzin?.guruPengajar}
-                  </p>
-                ) : null}
-              </div>
               <div className="w-full mt-4">
                 <h1 className="font-abc pb-2 ">Kurikulum</h1>
                 <select
@@ -551,7 +630,7 @@ export default function TabelIzin({ data, children }) {
                   })}
                 </select>
                 {errIzin?.kurikulum ? (
-                  <p className="text-red-500 text-sm">*{errIzin?.kurikulum}</p>
+                  <p className="text-sm text-red-500">*{errIzin?.kurikulum}</p>
                 ) : null}
               </div>
 
@@ -566,9 +645,9 @@ export default function TabelIzin({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamKeluar ? (
-                      <p className="text-red-500 text-sm">
-                        *{errIzin?.jamKeluar}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
                       </p>
                     ) : null}
                   </div>
@@ -576,15 +655,14 @@ export default function TabelIzin({ data, children }) {
                     <h1 className="font-abc pb-2">Jam Masuk</h1>
                     <input
                       type="time"
-                      min="08:00"
                       value={izin.jamMasuk}
                       name="jamMasuk"
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamMasuk ? (
-                      <p className="text-red-500 text-sm">
-                        *{errIzin?.jamMasuk}
+                    {errIzin.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamMasuk}
                       </p>
                     ) : null}
                   </div>
@@ -599,9 +677,9 @@ export default function TabelIzin({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamKeluar ? (
-                      <p className="text-red-500 text-sm">
-                        *{errIzin?.jamKeluar}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
                       </p>
                     ) : null}
                   </div>
@@ -609,7 +687,7 @@ export default function TabelIzin({ data, children }) {
               ) : (
                 <>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukkkkkk</h1>
                     <input
                       type="time"
                       value={izin.jamMasuk}
@@ -617,9 +695,9 @@ export default function TabelIzin({ data, children }) {
                       onChange={(e) => changeIzinHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamMasuk ? (
-                      <p className="text-red-500 text-sm">
-                        *{errIzin?.jamMasuk}
+                    {errIzin.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamMasuk}
                       </p>
                     ) : null}
                   </div>
@@ -632,7 +710,7 @@ export default function TabelIzin({ data, children }) {
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     />
                     <label
-                      for="default-checkbox"
+                      htmlFor="default-checkbox"
                       className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                     >
                       Upload Bukti
@@ -664,12 +742,12 @@ export default function TabelIzin({ data, children }) {
                   onChange={(e) => changeIzinHandler(e)}
                   id="comment"
                   rows="4"
-                  className="block p-2.5 w-full pl-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-black focus:ring-blue-500 focus:border-blue-500  dark:focus:ring-blue-50"
+                  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-black focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Keterangan"
                 ></textarea>
               </div>
-              {errIzin?.keterangan ? (
-                <p className="text-red-500 text-sm">*{errIzin?.keterangan}</p>
+              {errIzin.keterangan ? (
+                <p className="text-sm text-red-500">*{errIzin.keterangan}</p>
               ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
@@ -754,7 +832,7 @@ export default function TabelIzin({ data, children }) {
                 img == null && izinEdit.foto != null ? (
                   <div className="w-full ">
                     <img
-                      className="w-[60%] mx-auto rounded-lg object-contain"
+                      className="w-[60%] rounded-lg mx-auto object-contain"
                       src={izinEdit.foto}
                       alt=""
                     />
@@ -770,53 +848,10 @@ export default function TabelIzin({ data, children }) {
                 ) : null
               ) : null}
               <div className="w-full mt-4">
-                <h1 className="font-abc pb-2 ">Mata Pelajaran</h1>
-                <input
-                  type="text"
-                  value={izinEdit.idMapel}
-                  name="idMapel"
-                  onChange={(e) => changeIzinEditHandler(e)}
-                  className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                />
-                {errIzin?.idMapel ? (
-                  <p className="text-red-500 text-sm">*{errIzin?.idMapel}</p>
-                ) : null}
-              </div>
-              <div className="w-full mt-4">
-                <h1 className="font-abc pb-2 ">Guru Pengajar</h1>
-                <select
-                  name="guruPengajar"
-                  onChange={(e) => changeIzinEditHandler(e)}
-                  id=""
-                  className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                >
-                  {guruPengajar.map((item, index) => {
-                    if (item.id == izinEdit.guruPengajar) {
-                      return (
-                        <option key={index} value={`${item.id}`} selected>
-                          {item.name}
-                        </option>
-                      );
-                    } else {
-                      return (
-                        <option key={index} value={`${item.id}`}>
-                          {item.name}
-                        </option>
-                      );
-                    }
-                  })}
-                </select>
-                {errIzin?.guruPengajar ? (
-                  <p className="text-red-500 text-sm">
-                    *{errIzin?.guruPengajar}
-                  </p>
-                ) : null}
-              </div>
-              <div className="w-full mt-4">
                 <h1 className="font-abc pb-2 ">Kurikulum</h1>
                 <select
                   name="kurikulum"
-                  onChange={(e) => changeIzinHandler(e)}
+                  onChange={(e) => changeIzinEditHandler(e)}
                   id=""
                   className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                 >
@@ -838,43 +873,40 @@ export default function TabelIzin({ data, children }) {
                     }
                   })}
                 </select>
-                {errIzin?.kurikulum ? (
-                  <p className="text-red-500 text-sm">*{errIzin?.kurikulum}</p>
-                ) : null}
               </div>
               {izinEdit.typeIzin == "Keluar" ? (
                 <>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Keluarr</h1>
+                    <h1 className="font-abc pb-2">Jam Keluar</h1>
                     <input
                       type="time"
-                      // value={izinEdit.jamKeluar}
+                      value={izinEdit.jamKeluar}
                       name="jamKeluar"
                       onChange={(e) =>
                         setIzinEdit({ ...izinEdit, jamKeluar: e.target.value })
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamKeluar ? (
-                      <p className="text-red-500 text-sm">
-                        *{errIzin?.jamKeluar}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
                       </p>
                     ) : null}
                   </div>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukkk</h1>
                     <input
                       type="time"
-                      // value={""}
+                      value={izinEdit.jamMasuk}
                       name="jamMasuk"
                       onChange={(e) =>
                         setIzinEdit({ ...izinEdit, jamMasuk: e.target.value })
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamMasuk ? (
-                      <p className="text-red-500 text-sm">
-                        *{errIzin?.jamMasuk}
+                    {errIzin.jamMasuk ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamMasuk}
                       </p>
                     ) : null}
                   </div>
@@ -886,15 +918,15 @@ export default function TabelIzin({ data, children }) {
                     <input
                       type="time"
                       name="jamKeluar"
-                      // value={izinEdit.jamKeluar}
+                      value={izinEdit.jamKeluar}
                       onChange={(e) =>
                         setIzinEdit({ ...izinEdit, jamKeluar: e.target.value })
                       }
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
-                    {errIzin?.jamKeluar ? (
-                      <p className="text-red-500 text-sm">
-                        *{errIzin?.jamKeluar}
+                    {errIzin.jamKeluar ? (
+                      <p className="text-sm text-red-500">
+                        *{errIzin.jamKeluar}
                       </p>
                     ) : null}
                   </div>
@@ -902,21 +934,37 @@ export default function TabelIzin({ data, children }) {
               ) : (
                 <>
                   <div className="w-full mt-4">
-                    <h1 className="font-abc pb-2">Jam Masuk</h1>
+                    <h1 className="font-abc pb-2">Jam Masukkkkk</h1>
                     <input
                       type="time"
-                      // value={""}
+                      value={izinEdit.jamMasuk}
                       name="jamMasuk"
                       onChange={(e) => changeIzinEditHandler(e)}
                       className=" border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
                     />
                     {errIzin?.jamMasuk ? (
-                      <p className="text-red-500 text-sm">
+                      <p className="text-sm text-red-500">
                         *{errIzin?.jamMasuk}
                       </p>
                     ) : null}
                   </div>
-
+                  {isBukti && izinEdit.typeIzin == "Masuk" ? (
+                    <div className="w-full mt-4">
+                      <label
+                        htmlFor="buktiNota"
+                        className="border-2 border-slate-500 px-2 py-1 text-sm font-abc rounded-md"
+                      >
+                        Pilih Foto
+                      </label>
+                      <input
+                        type="file"
+                        name="buktiNota"
+                        id="buktiNota"
+                        onChange={(e) => setImg(e.target.files[0])}
+                        className="hidden border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
+                      />
+                    </div>
+                  ) : null}
                   <div className="flex items-center mt-4 mb-4">
                     <input
                       onChange={() => setIsBukti(!isBukti)}
@@ -926,7 +974,7 @@ export default function TabelIzin({ data, children }) {
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     />
                     <label
-                      for="default-checkbox"
+                      htmlFor="default-checkbox"
                       className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                     >
                       Upload Bukti
@@ -934,23 +982,6 @@ export default function TabelIzin({ data, children }) {
                   </div>
                 </>
               )}
-              {isBukti && izinEdit.typeIzin == "Masuk" ? (
-                <div className="w-full mt-4">
-                  <label
-                    htmlFor="buktiNota"
-                    className="border-2 border-slate-500 px-2 py-1 text-sm font-abc rounded-md"
-                  >
-                    Pilih Foto
-                  </label>
-                  <input
-                    type="file"
-                    name="buktiNota"
-                    id="buktiNota"
-                    onChange={(e) => setImg(e.target.files[0])}
-                    className="hidden border-2 border-slate-500 rounded-xl pl-3 w-full h-[30px]"
-                  />
-                </div>
-              ) : null}
               <div className="w-full mt-4">
                 <textarea
                   value={izinEdit.keterangan}
@@ -958,13 +989,13 @@ export default function TabelIzin({ data, children }) {
                   onChange={(e) => changeIzinEditHandler(e)}
                   id="comment"
                   rows="4"
-                  className="w-full px-0  pl-3 text-sm text-gray-900 bg-white border-[1px] border-black rou"
+                  className="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
                   placeholder="Keterangan"
                   required
                 ></textarea>
               </div>
               {errIzin?.keterangan ? (
-                <p className="text-red-500 text-sm">*{errIzin?.keterangan}</p>
+                <p className="text-sm text-red-500">*{errIzin?.keterangan}</p>
               ) : null}
               <div className="w-full justify-center mt-12 mb-12 flex items-center">
                 <button
@@ -993,7 +1024,7 @@ export default function TabelIzin({ data, children }) {
             <div className="bg-white w-[96%] mt-3 mb-[200px]  mx-auto  rounded-lg">
               <div className="lg:flex xl:flex block justify-between">
                 <div className="">
-                  {user?.role == 1 ? (
+                  {user?.role == 2 ? (
                     <button
                       onClick={() => setPengadaanBarang(!pengadaanBarang)}
                       className="bg-[#155f95] mt-1 mb-3 px-3 text-center py-1 xl:w-[200px] lg:w-[200px] w-full md:w-[200px] rounded-md text-[#E5D5F2] font-abc"
@@ -1014,7 +1045,11 @@ export default function TabelIzin({ data, children }) {
                         >
                           <option value="">Bulan</option>
                           {bulan.map((item, index) => {
-                            return <option value={index}>{item}</option>;
+                            return (
+                              <option key={index} value={index}>
+                                {item}
+                              </option>
+                            );
                           })}
                         </select>
                       </div>
@@ -1030,7 +1065,11 @@ export default function TabelIzin({ data, children }) {
                         >
                           <option value="">Tahun</option>
                           {tahun.map((item, index) => {
-                            return <option value={item}>{item}</option>;
+                            return (
+                              <option key={index} value={item}>
+                                {item}
+                              </option>
+                            );
                           })}
                         </select>
                       </div>

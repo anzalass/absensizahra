@@ -28,7 +28,6 @@ export default function ChangePassword() {
       ...data,
       [e.target.name]: e.target.value,
     });
-    console.log(data);
   };
 
   const UpdatePassword = async () => {
