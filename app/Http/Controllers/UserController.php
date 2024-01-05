@@ -276,6 +276,8 @@ class UserController extends BaseController
                     $findUser->noHP = $request->noHP;
                     $findUser->role = $request->role;
                     $findUser->email = $request->email;
+                    $findUser->fotoprofile = $request->fotoprofile;
+
                     $findUser->save();
                     return response()->json([
                         'message' => "Data User Berhasil Di Update"
