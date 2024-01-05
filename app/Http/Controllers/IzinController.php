@@ -624,38 +624,42 @@ class IzinController extends Controller
     }
 
     public function Tolak($id,$role){
-        $getRecord = Izin::find($id);
+        try {
+            $getRecord = Izin::find($id);
 
-        if(!$getRecord){
+            if(!$getRecord){
+                return response()->json([
+                    'message' => "Data Tidak Ditemukan"
+                ],404);
+            }
+    
+            $findPengaju = User::find($getRecord->idUser);
+            if($role === 2){
+                $findPengaju['link'] = "http://localhost:5173/Detail/".$id;
+                $findPengaju['perespon'] = "Guru";
+                $findPengaju['respon'] = "Ditolak";
+    
+                $getRecord->responGuruPengajar = "Ditolak";    
+    
+            }else if($role === 5){
+                $findPengaju['link'] = "http://localhost:5173/Detail/".$id;
+                $findPengaju['perespon'] = "Kurikulum";
+                $findPengaju['respon'] = "Ditolak";
+    
+                $getRecord->responKurikulum = "Ditolak";
+            }
+            $getRecord->statusPengajuan = "Ditolak";  
+    
+            Mail::mailer('smtp')->to($findPengaju->email)->send(new RespondNotification($findPengaju));
+    
+            $getRecord->save();
             return response()->json([
-                'message' => "Data Tidak Ditemukan"
-            ],404);
+                'message'=> "Data berhasil diupdate"
+            ],200);
+        } catch(\Exception $e){
+            return response()->json([
+                'message'=>$e
+            ],500);
         }
-
-        $findPengaju = User::find($getRecord->idUser);
-
-
-        if($role == 2){
-            $findPengaju['link'] = "http://localhost:5173/Detail/".$id;
-            $findPengaju['perespon'] = "Guru";
-            $findPengaju['respon'] = "Ditolak";
-
-            $getRecord->responGuruPengajar = "Ditolak";    
-
-        }else if($role == 5){
-            $findPengaju['link'] = "http://localhost:5173/Detail/".$id;
-            $findPengaju['perespon'] = "Kurikulum";
-            $findPengaju['respon'] = "Ditolak";
-
-            $getRecord->responKurikulum = "Ditolak";
-        }
-        $getRecord->statusPengajuan = "Ditolak";  
-
-        Mail::mailer('smtp')->to($findPengaju->email)->send(new RespondNotification($findPengaju));
-
-        $getRecord->save();
-        return response()->json([
-            'message'=> "Data berhasil diupdate"
-        ],200);
     }
 }

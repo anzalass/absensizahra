@@ -92,7 +92,8 @@ class UserController extends BaseController
                         'kelas'=>$request->kelas,
                         'password' => Hash::make($request->password ),
                         'role' => $request->role,
-                        'noHP' => $request->noHP
+                        'noHP' => $request->noHP,
+                        'fotoprofile' => $request->fotoprofile,
                     ]);
                 }else{
                     $user = User::create([
@@ -100,7 +101,8 @@ class UserController extends BaseController
                         'name'=>$request->name,
                         'password' => Hash::make($request->password ),
                         'role' => $request->role,
-                        'noHP' => $request->noHP
+                        'noHP' => $request->noHP,
+                        'fotoprofile' => $request->fotoprofile,
                     ]);
                 }
 
@@ -262,6 +264,7 @@ class UserController extends BaseController
                     'name' => 'required',
                     'noHP' => 'required|max:13',
                     'role'=> 'required'
+                    
                 ]);
 
                 if($validator->fails()){
@@ -272,6 +275,9 @@ class UserController extends BaseController
                     $findUser->name = $request->name;
                     $findUser->noHP = $request->noHP;
                     $findUser->role = $request->role;
+                    $findUser->email = $request->email;
+                    $findUser->fotoprofile = $request->fotoprofile;
+
                     $findUser->save();
                     return response()->json([
                         'message' => "Data User Berhasil Di Update"
