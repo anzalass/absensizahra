@@ -37,7 +37,7 @@ export default function LoginPage({ children }) {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/login",
+        `${BACKEND_BASE_URL}/api/login`,
         data
       );
 
