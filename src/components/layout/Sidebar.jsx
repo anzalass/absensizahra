@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 export default function Sidebar({ open, setSidebar, width, setWidth }) {
   const { user } = useSelector((state) => state.user);
   let sidebarMenu = [];
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   if (user?.role == 1) {
     sidebarMenu = [
       {
@@ -122,7 +123,7 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
       <GiHamburgerMenu
         className={`left-3 fixed top-2 z-50`}
         size={25}
-        onClick={() => setWidth(!width)}
+        onClick={() => {setWidth(!width);setSidebarOpen(!isSidebarOpen)}}
       />
       <div
         className={`fixed h-[100vh] bg-white left-0 z-40 ${
