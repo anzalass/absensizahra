@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BACKEND_BASE_URL } from "../../config/base_url";
 
 export const loadUser = () => async (dispatch) => {
   const token = localStorage.getItem("token");
@@ -9,7 +10,7 @@ export const loadUser = () => async (dispatch) => {
     const headers = {
       Authorization: `Bearer ${token}`,
     };
-    const { data } = await axios.get("http://localhost:8000/api/user", {
+    const { data } = await axios.get(`${BACKEND_BASE_URL}/api/user`, {
       headers,
       withCredentials: true,
     });

@@ -7,7 +7,7 @@ import { BsCardChecklist } from "react-icons/bs";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { BASE_URL } from "../../config/base_url";
+import { BACKEND_BASE_URL, BASE_URL } from "../../config/base_url";
 import Swal from "sweetalert2";
 import { FaUber, FaUser } from "react-icons/fa";
 export default function Sidebar({ open, setSidebar, width, setWidth }) {
@@ -93,7 +93,7 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
         confirmButtonText: "Yes",
       }).then((result) => {
         if (result.isConfirmed) {
-          const res = fetch("http://localhost:8000/api/logout", {
+          const res = fetch(`${BACKEND_BASE_URL}/api/logout`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
