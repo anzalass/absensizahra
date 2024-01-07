@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { BASE_URL } from "../config/base_url";
+import { BACKEND_BASE_URL, BASE_URL } from "../config/base_url";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function LoginPage({ children }) {
@@ -36,10 +36,12 @@ export default function LoginPage({ children }) {
   const login = async (e) => {
     e.preventDefault();
     try {
+
       const response = await axios.post(
         `${BACKEND_BASE_URL}/api/login`,
         data
       );
+
 
       localStorage.setItem("token", response.data.message);
       const content = response.data.message;
