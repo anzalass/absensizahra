@@ -59,13 +59,10 @@ export default function TabelMapel({ data, children }) {
 
   useEffect(() => {
     fetchData();
-    console.log(data.length);
   }, []);
 
   const fetchData = async () => {
-    const getMapel = await axios.get(
-      `${BACKEND_BASE_URL}/api/getMataPelajaran`
-    );
+    const getMapel = await axios.get(`${BACKEND_BASE_URL}api/getMataPelajaran`);
     setMapel(getMapel.data.results);
   };
 
@@ -74,14 +71,13 @@ export default function TabelMapel({ data, children }) {
       ...mapelSiswa,
       [e.target.name]: e.target.value,
     });
-    console.log(izin);
   };
 
   const ajukanIzin = async (e) => {
     e.preventDefault();
     try {
       const tambah = await axios.post(
-        `${BACKEND_BASE_URL}/api/requestIzin`,
+        `${BACKEND_BASE_URL}api/requestIzin`,
         izin
       );
 
@@ -97,7 +93,7 @@ export default function TabelMapel({ data, children }) {
     try {
       setIdIzin(id);
       setEditBarang(!editBarang);
-      const res = await axios.get(`${BACKEND_BASE_URL}/api/getIzinById/${id}`);
+      const res = await axios.get(`${BACKEND_BASE_URL}api/getIzinById/${id}`);
       setIzinEdit(res.data.results);
     } catch (err) {
       console.log(err);
@@ -107,7 +103,7 @@ export default function TabelMapel({ data, children }) {
   const EditIzin = async () => {
     try {
       const res = await axios.put(
-        `${BACKEND_BASE_URL}/api/EditIzin/${idIzin}`,
+        `${BACKEND_BASE_URL}api/EditIzin/${idIzin}`,
         izinEdit
       );
       if (res.status === 200) {
@@ -602,13 +598,14 @@ export default function TabelMapel({ data, children }) {
                         >
                           <option value="">Bulan</option>
                           {bulan.map((item, index) => {
-                            return <option value={index}>{item}</option>;
+                            return (
+                              <option key={index} value={index}>
+                                {item}
+                              </option>
+                            );
                           })}
                         </select>
                       </div>
-                    </div>
-
-                    <div className="flex">
                       <div className="">
                         <select
                           name=""
@@ -618,7 +615,11 @@ export default function TabelMapel({ data, children }) {
                         >
                           <option value="">Tahun</option>
                           {tahun.map((item, index) => {
-                            return <option value={item}>{item}</option>;
+                            return (
+                              <option key={index} value={item}>
+                                {item}
+                              </option>
+                            );
                           })}
                         </select>
                       </div>

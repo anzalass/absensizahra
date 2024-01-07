@@ -291,10 +291,8 @@ export default function TabelIzinGuru({ data, children }) {
   }
 
   const fetchData = async () => {
-    const getKurikulum = await axios.get(
-      `${BACKEND_BASE_URL}/api/getKurikulum`
-    );
-    const getAllUser = await axios.get(`${BACKEND_BASE_URL}/api/getUser`);
+    const getKurikulum = await axios.get(`${BACKEND_BASE_URL}api/getKurikulum`);
+    const getAllUser = await axios.get(`${BACKEND_BASE_URL}api/getUser`);
 
     setAllUser(getAllUser.data.results);
     setKurikulum(getKurikulum.data.results);
@@ -318,7 +316,6 @@ export default function TabelIzinGuru({ data, children }) {
       ...izin,
       [e.target.name]: e.target.value,
     });
-    console.log(izin);
   };
 
   const changeIzinEditHandler = (e) => {
@@ -326,7 +323,6 @@ export default function TabelIzinGuru({ data, children }) {
       ...izinEdit,
       [e.target.name]: e.target.value,
     });
-    console.log(izinEdit);
   };
 
   const ajukanIzin = async (e) => {
@@ -372,7 +368,7 @@ export default function TabelIzinGuru({ data, children }) {
         }
       }
       const response = await axios.post(
-        `${BACKEND_BASE_URL}/api/requestIzinGuru/`,
+        `${BACKEND_BASE_URL}api/requestIzinGuru/`,
         izin
       );
 
@@ -401,7 +397,7 @@ export default function TabelIzinGuru({ data, children }) {
     try {
       setIdIzin(id);
       setEditBarang(!editBarang);
-      const res = await axios.get(`${BACKEND_BASE_URL}/api/getIzinById/${id}`);
+      const res = await axios.get(`${BACKEND_BASE_URL}api/getIzinById/${id}`);
       setIzinEdit(res.data.results[0]);
     } catch (err) {
       console.log(err);
@@ -439,7 +435,7 @@ export default function TabelIzinGuru({ data, children }) {
 
         izinEdit.foto = res.data.secure_url;
         const response = await axios.put(
-          `${BACKEND_BASE_URL}/api/EditIzinGuru/${idIzin}`,
+          `${BACKEND_BASE_URL}api/EditIzinGuru/${idIzin}`,
           izinEdit
         );
         Swal.fire({
@@ -453,7 +449,7 @@ export default function TabelIzinGuru({ data, children }) {
         });
       } else {
         const response = await axios.put(
-          `${BACKEND_BASE_URL}/api/EditIzinGuru/${idIzin}`,
+          `${BACKEND_BASE_URL}api/EditIzinGuru/${idIzin}`,
           izinEdit
         );
         Swal.fire({
