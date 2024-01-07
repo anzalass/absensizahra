@@ -256,39 +256,47 @@ export default function Indikator() {
       ) : user?.role === 5 ? (
         <div className="mt-3 p-3 w-full mx-auto bg-white rounded-lg h-[40vh]  block lg:flex xl:flex md:flex ">
           <div className=" grid grid-cols-2 gap-4  mx-auto lg:w-[50%] xl:w-[50%] md:w-[50%] w-full ">
-            <div className="h-[100px] pl-3 pt-6 relative z-30 rounded-md w-[100%] bg-[#155f95]">
-              <h1 className=" text-white font-[500] text-[20px]">
-                {kurikulum?.siswa}
-              </h1>
-              <h1 className=" text-white font-[500] text-[16px]">
-                Daftar Siswa
-              </h1>
-            </div>
-            <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#FDB022]">
-              <h1 className=" text-white font-[500] text-[20px]">
-                {kurikulum?.guru}
-              </h1>
-              <h1 className=" text-white font-[500] text-[16px]">
-                Daftar Guru
-              </h1>
-            </div>
+            <Link to={"/AllUsers"}>
+              <div className="h-[100px] pl-3 pt-6 relative z-30 rounded-md w-[100%] bg-[#155f95]">
+                <h1 className=" text-white font-[500] text-[20px]">
+                  {kurikulum?.siswa}
+                </h1>
+                <h1 className=" text-white font-[500] text-[16px]">
+                  Daftar Siswa
+                </h1>
+              </div>
+            </Link>
+            <Link to={"/AllUsers"}>
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#FDB022]">
+                <h1 className=" text-white font-[500] text-[20px]">
+                  {kurikulum?.guru}
+                </h1>
+                <h1 className=" text-white font-[500] text-[16px]">
+                  Daftar Guru
+                </h1>
+              </div>
+            </Link>
+            <Link to={"/AllUsers"}>
+              <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#32D583]">
+                <h1 className=" text-white font-[500] text-[20px]">
+                  {kurikulum?.admin}
+                </h1>
+                <h1 className=" text-white font-[500] text-[16px]">
+                  Daftar Admin
+                </h1>
+              </div>
+            </Link>
 
-            <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-[#32D583]">
-              <h1 className=" text-white font-[500] text-[20px]">
-                {kurikulum?.admin}
-              </h1>
-              <h1 className=" text-white font-[500] text-[16px]">
-                Daftar Admin
-              </h1>
-            </div>
-            <div className=" pl-3 pt-6 h-[100px] relative rounded-md w-[100%] bg-[#F04438]">
-              <h1 className=" text-white font-[500] text-[20px]">
-                {kurikulum?.kurikulum}
-              </h1>
-              <h1 className=" text-white font-[500] text-[16px]">
-                Daftar Kurikulum
-              </h1>
-            </div>
+            <Link to={"/AllUsers"}>
+              <div className=" pl-3 pt-6 h-[100px] relative rounded-md w-[100%] bg-[#F04438]">
+                <h1 className=" text-white font-[500] text-[20px]">
+                  {kurikulum?.kurikulum}
+                </h1>
+                <h1 className=" text-white font-[500] text-[16px]">
+                  Daftar Kurikulum
+                </h1>
+              </div>
+            </Link>
             <Link to={"/PermintaanIzin"}>
               <div className="h-[100px] pl-3 pt-6 relative rounded-md w-[100%] bg-purple-500">
                 <h1 className=" text-white font-[500] text-[20px]">

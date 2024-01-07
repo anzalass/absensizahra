@@ -316,7 +316,7 @@ export default function TabelUser({ data, children }) {
                       <option value="4">Admin</option>
                       <option value="2">Guru</option>
                       <option value="1">Siswa</option>
-                      <option value="2">Kurikulum</option>
+                      <option value="5">Kurikulum</option>
                     </select>
                   </div>
                   <div className="mt-1 mb-3 px-3">

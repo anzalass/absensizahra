@@ -33,7 +33,11 @@ export default function AllUser() {
   return (
     <div className="w-full min-h-screen mb-[100px] flex">
       <div className={``}>
-        <Sidebar setSidebar={2} width={open} setWidth={setOpen} />
+        <Sidebar
+          setSidebar={user?.role === 5 ? 4 : 2}
+          width={open}
+          setWidth={setOpen}
+        />
       </div>
       <div className={`w-11/12 mx-auto`}>
         <TopBar>{"Semua Pengguna"}</TopBar>
