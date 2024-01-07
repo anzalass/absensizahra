@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/layout/Sidebar";
 import TopBar from "../components/layout/TopBar";
-import Aktivitas from "../components/admin/home/Aktivitas";
-import AdminDetailCard from "../components/admin/home/AdminDetailCard";
 import { useSelector } from "react-redux";
 import Indikator from "../components/admin/home/Indikator";
 

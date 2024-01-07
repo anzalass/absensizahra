@@ -8,14 +8,14 @@ import { BASE_URL } from "../../config/base_url";
 
 export default function TopBar({ children }) {
   const nav = useNavigate();
-  const [topbarheader, setTopbarHeader] = useState("")
+  const [topbarheader, setTopbarHeader] = useState("");
   const { user } = useSelector((state) => state.user);
 
   const topBarHeader = () => {
     if (user?.role === 1) {
-      setTopbarHeader("Siswa")
+      setTopbarHeader("Siswa");
     }
-  }
+  };
 
   useEffect(() => {
     const delay = 2000;
@@ -30,10 +30,8 @@ export default function TopBar({ children }) {
   }, [user]);
 
   useEffect(() => {
-    console.log(user?.role);
-    console.log(topbarheader);
-    topBarHeader()
-  }, [user])
+    topBarHeader();
+  }, [user]);
 
   return (
     <div>
@@ -42,9 +40,12 @@ export default function TopBar({ children }) {
           <h1>{children}</h1>
         </div>
         <div className="w-[50%] flex justify-end  ">
-
           <div className="flex">
-            <FaUserCircle size={25} />
+            <img
+              src={user?.fotoprofile}
+              className="w-[25px] h-[25px] object-cover rounded-full"
+              alt=""
+            />
             <h1
               onClick={() => nav("/Profile")}
               className="ml-2 font-abc font-[500] cursor-pointer"

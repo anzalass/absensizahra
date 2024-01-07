@@ -12,7 +12,7 @@ export default function LandingPage() {
       nav("/home");
     }
   }, [user]);
-  console.log(user);
+
   return (
     <div className="">
       <div className="w-full bg-[#155f95] ">

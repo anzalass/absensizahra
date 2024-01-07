@@ -1,6 +1,6 @@
 import Sidebar from "../../components/layout/Sidebar.jsx";
 import TopBar from "../../components/layout/TopBar.jsx";
-import TableIzin from "../../components/admin/pengadaanbarang/TabelIzin.jsx";
+import TableIzin from "../../components/admin/Tabel/TabelIzin.jsx";
 import axios, { all } from "axios";
 import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
@@ -22,10 +22,9 @@ export default function PermissionGuruPengajar() {
   const fetchData = async () => {
     try {
       const result = await axios.get(
-        `${BACKEND_BASE_URL}/api/getIzinPengajar/${user.id}`
+        `${BACKEND_BASE_URL}api/getIzinPengajar/${user.id}`
       );
       setIzin(result.data.results);
-      console.log("result : ", result.data.results);
 
       await new Promise((resolve) => setTimeout(resolve, 1000)); // 1000 milliseconds
     } catch (err) {
