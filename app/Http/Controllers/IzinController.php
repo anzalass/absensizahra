@@ -174,7 +174,16 @@ class IzinController extends Controller
                         'before:16:00'
                     ],
                     'typeIzin'=> 'required',
-                ]);
+                ],
+            [
+                'idUser.required' => 'wajib diisi',
+                'idMapel.required' => 'wajib diisi',
+                'kelas.required'=> 'wajib diisi',
+                'guruPengajar.required' => 'wajib diisi',
+                'keterangan.required'=> 'wajib diisi',
+                'jamMasuk.required'=> 'wajib diisi',
+            ]
+        );
             }else if($request->typeIzin == 'Keluar'){
                 $validator = Validator::make($request->all(),[
                     'idUser' => 'required',
@@ -195,7 +204,17 @@ class IzinController extends Controller
                     ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
-                ]);
+                ],
+                [
+                    'idUser.required' => 'wajib diisi',
+                    'idMapel.required' => 'wajib diisi',
+                    'kelas.required'=> 'wajib diisi',
+                    'guruPengajar.required' => 'wajib diisi',
+                    'jamMasuk.required'=> 'wajib diisi',
+                    'jamKeluar.required'=> 'wajib diisi',
+                    'keterangan.required'=> 'wajib diisi',
+                ]
+            );
 
             }else if($request->typeIzin == 'Pulang'){
                 $validator = Validator::make($request->all(),[
@@ -211,7 +230,16 @@ class IzinController extends Controller
                     ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
-                ]);
+                ],
+                [
+                    'idUser.required' => 'wajib diisi',
+                    'idMapel.required' => 'wajib diisi',
+                    'kelas.required'=> 'wajib diisi',
+                    'guruPengajar.required' => 'wajib diisi',
+                    'keterangan.required'=> 'wajib diisi',
+                    'jamMasuk.required'=> 'wajib diisi',
+                ]
+            );
             }
 
             if($validator->fails()){
@@ -276,7 +304,17 @@ class IzinController extends Controller
                     'before:16:00'
                 ],
                     'typeIzin'=> 'required',
-                ]);
+                ],
+                [
+                    'idUser.required' => 'wajib diisi',
+                    'idMapel.required' => 'wajib diisi',
+                    'kelas.required'=> 'wajib diisi',
+                    'guruPengajar.required' => 'wajib diisi',
+                    'kurikulum.required' => 'wajib diisi',
+                    'keterangan.required'=> 'wajib diisi',
+                    'jamMasuk.required'=> 'wajib diisi',
+                ]
+            );
             }else if($request->typeIzin == 'Keluar'){
                 $validator = Validator::make($request->all(),[
                     'idUser' => 'required',
@@ -296,7 +334,18 @@ class IzinController extends Controller
                 ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
-                ]);
+                ],
+                [
+                    'idUser.required' => 'wajib diisi',
+                    'idMapel.required' => 'wajib diisi',
+                    'kelas.required'=> 'wajib diisi',
+                    'guruPengajar.required' => 'wajib diisi',
+                    'kurikulum.required' => 'wajib diisi',
+                    'keterangan.required'=> 'wajib diisi',
+                    'jamMasuk.required'=> 'wajib diisi',
+                    'jamKeluar.required'=> 'wajib diisi',
+                ]
+            );
             }else if($request->typeIzin == 'Pulang'){
                 $validator = Validator::make($request->all(),[
                     'idUser' => 'required',
@@ -311,7 +360,18 @@ class IzinController extends Controller
                 ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
-                ]);
+            ],
+            [
+                
+                    'idUser.required' => 'wajib diisi',
+                    'idMapel.required' => 'wajib diisi',
+                    'kelas.required'=> 'wajib diisi',
+                    'guruPengajar.required' => 'wajib diisi',
+                    'kurikulum.required' => 'wajib diisi',
+                    'keterangan.required'=> 'wajib diisi',
+                    'jamKeluar.required'=> 'wajib diisi',
+            ]
+            );
             }
 
             if($validator->fails()){
@@ -399,6 +459,11 @@ class IzinController extends Controller
                     'before:16:00'
                 ],
                     'typeIzin'=> 'required',
+                ],[
+                    'idUser.required' => 'wajib diisi',
+                    'kurikulum.required' => 'wajib diisi',
+                    'keterangan.required'=> 'wajib diisi',
+                    'jamMasuk.required'=> 'wajib diisi',
                 ]);
             }else if($request->typeIzin == 'Keluar'){
                 $validator = Validator::make($request->all(),[
@@ -416,6 +481,12 @@ class IzinController extends Controller
                 ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
+                ],[
+                    'idUser.required' => 'wajib diisi',
+                    'kurikulum.required' => 'wajib diisi',
+                    'jamMasuk.required'=> 'wajib diisi',
+                    'jamKeluar.required'=> 'wajib diisi',
+                    'keterangan.required'=> 'wajib diisi',
                 ]);
             }else if($request->typeIzin == 'Pulang'){
                 $validator = Validator::make($request->all(),[
@@ -428,6 +499,11 @@ class IzinController extends Controller
                 ],
                     'keterangan'=> 'required',
                     'typeIzin'=> 'required',
+                ],[
+                    'idUser.required' => 'wajib diisi',
+                    'kurikulum.required' => 'wajib diisi',
+                    'jamKeluar.required'=> 'wajib diisi',
+                    'keterangan.required'=> 'wajib diisi',
                 ]);
             }
 
@@ -510,6 +586,11 @@ class IzinController extends Controller
                     ],
                         'keterangan'=> 'required',
                         'typeIzin'=> 'required',
+                    ],[
+                        'idUser.required' => 'wajib diisi',
+                        'kurikulum.required' => 'wajib diisi',
+                        'jamMasuk.required'=> 'wajib diisi',
+                        'keterangan.required'=> 'wajib diisi',
                     ]);
                 }else if($request->typeIzin == 'Keluar'){
                     $validator = Validator::make($request->all(),[
@@ -527,6 +608,12 @@ class IzinController extends Controller
                     ],
                         'keterangan'=> 'required',
                         'typeIzin'=> 'required',
+                    ],[
+                        'idUser.required' => 'wajib diisi',
+                        'kurikulum.required' => 'wajib diisi',
+                        'jamMasuk.required'=> 'wajib diisi',
+                        'jamKeluar.required'=> 'wajib diisi',
+                        'keterangan.required'=> 'wajib diisi',
                     ]);
                 }else if($request->typeIzin == 'Pulang'){
                     $validator = Validator::make($request->all(),[
@@ -539,6 +626,11 @@ class IzinController extends Controller
                     ],
                         'keterangan'=> 'required',
                         'typeIzin'=> 'required',
+                    ],[
+                        'idUser.required' => 'wajib diisi',
+                        'kurikulum.required' => 'wajib diisi',
+                        'jamKeluar.required'=> 'wajib diisi',
+                        'keterangan.required'=> 'wajib diisi',
                     ]);
                 }
 

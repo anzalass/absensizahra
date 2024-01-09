@@ -68,6 +68,13 @@ class UserController extends BaseController
                 'kelas'=>'required|string',
                 "noHP" => 'required|string|max:13'
           
+            ],[
+                'email.required' => 'wajib diisi',
+                'password.required' => 'wajib diisi',
+                'kelas.required' => 'wajib diisi',
+                'name.required'=> 'wajib diisi',
+                'role.required'=> 'wajib diisi',
+                'noHP.required'=> 'wajib diisi',
             ]);
         }else{
             $validator = Validator::make($request->all(),[
@@ -76,6 +83,12 @@ class UserController extends BaseController
                 'name' => 'required|string|max:255',
                 'role' => 'required|string|max:1',
                 "noHP" => 'required|string|max:13'
+            ],[
+                'email.required' => 'wajib diisi',
+                'password.required' => 'wajib diisi',
+                'name.required'=> 'wajib diisi',
+                'role.required'=> 'wajib diisi',
+                'noHP.required'=> 'wajib diisi',
             ]);
         }
              if($validator->fails()){
