@@ -65,15 +65,15 @@ export default function Sidebar({ open, setSidebar, width, setWidth }) {
         url: "/home",
         icon: <GrHomeRounded className={` fill-white  my-auto`} />,
       },
-      {
-        title: "Permintaan Izin Siswa",
-        url: "/PermintaanIzinSiswa",
-        icon: <BsCardChecklist className={`  my-auto`} />,
-      },
+      // {
+      //   title: "Permintaan Izin Siswa",
+      //   url: "/PermintaanIzinSiswa",
+      //   icon: <BsCardChecklist className={`  my-auto`} />,
+      // },
       {
         title: "Permintaan Izin Guru",
         url: "/PermintaanIzin",
-        icon: <BsPencilSquare className="my-auto" />,
+        icon: <BsCardChecklist className="my-auto" />,
       },
       {
         title: "Pengguna",
